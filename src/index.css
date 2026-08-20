@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Белый фон страницы — как у донора. */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --primary: 217 91% 55%; /* ≈ #2474F5 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 214 95% 93%; /* светло-голубая заливка активного пункта */
+    --accent-foreground: 217 91% 45%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Семантика состояний: подняты в токены из ад-хок классов донора. */
+    --success: 160 84% 39%; /* emerald-600 */
+    --success-foreground: 163 88% 24%; /* emerald-700 — текст на soft */
+    --success-soft: 152 81% 96%; /* emerald-50 */
+    --success-border: 152 76% 84%; /* emerald-200 */
+
+    --warning: 43 96% 56%; /* amber-400 */
+    --warning-foreground: 26 90% 37%; /* amber-700 */
+    --warning-soft: 48 100% 96%; /* amber-50 */
+    --warning-border: 48 97% 77%; /* amber-200 */
+
+    --info: 199 89% 48%; /* sky-500 */
+    --info-foreground: 226 71% 40%; /* blue-700 */
+    --info-soft: 214 100% 97%; /* blue-50 */
+    --info-border: 213 97% 87%; /* blue-200 */
+
+    --danger-foreground: 0 74% 42%; /* red-700 */
+    --danger-soft: 0 86% 97%; /* red-50 */
+    --danger-border: 0 96% 89%; /* red-200 */
+
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 217 91% 55%;
+
+    --radius: 12px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Комфортный тап-таргет и отсутствие подсветки на мобильных. */
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.22s ease-out;
+}
