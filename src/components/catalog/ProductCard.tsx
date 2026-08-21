@@ -3,7 +3,7 @@ import { Check, Package, ShoppingCart } from "lucide-react";
 
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { Badge, Button, Card } from "@/components/ui";
-import { formatMoney } from "@/lib/utils";
+import { assetUrl, formatMoney } from "@/lib/utils";
 import type { Product } from "@/types";
 
 /**
@@ -48,7 +48,7 @@ export function ProductCard({
       <div className="flex h-24 shrink-0 items-center justify-center overflow-hidden border-b border-border bg-muted/40 sm:h-32">
         {product.imageUrl ? (
           <img
-            src={product.imageUrl}
+            src={assetUrl(product.imageUrl)}
             alt={product.name}
             loading="lazy"
             className="h-full w-full object-cover"

@@ -4,14 +4,32 @@
 для ТОО «Корпорация Казахмыс» / Торговый Дом. Демонстрационный, без бэкенда:
 роль переключается вручную в шапке, данные — локальные (в проде — D365 F&O, HR API, SMS-шлюз).
 
+Демо: **https://morrison767.github.io/kazmys/**
+
 ## Запуск
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # прод-сборка в dist/
+npm run build    # прод-сборка в dist/ (base = /kazmys/)
 npm run lint     # tsc --noEmit
 ```
+
+## Публикация
+
+GitHub Pages, деплой при каждом пуше в `main` —
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml).
+В настройках репозитория должно быть выбрано **Settings → Pages → Source:
+GitHub Actions**.
+
+Особенности статического хостинга учтены в
+[vite.config.ts](vite.config.ts): `base` равен `/kazmys/` (в деве — `/`),
+рядом с `index.html` кладётся `404.html` — чтобы прямые ссылки вида
+`/kazmys/orders/ord-011` открывали приложение, а не ошибку хостинга,
+и `.nojekyll`. Роутер получает `basename` из `BASE_URL`, а пути к файлам
+из `public` собирает хелпер `assetUrl` — иначе фото товаров искались бы
+в корне домена. Для другого хостинга base переопределяется переменной
+`VITE_BASE`.
 
 ## Стек
 

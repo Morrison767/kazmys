@@ -12,6 +12,17 @@ export function formatMoney(value: number): string {
   }).format(value)} ₸`;
 }
 
+/**
+ * Адрес файла из public с учётом подпути публикации: на GitHub Pages
+ * приложение живёт в /kazmys/, поэтому «/products/x.jpg» сам по себе
+ * не открылся бы.
+ */
+export function assetUrl(path: string): string {
+  // Вне Vite (тесты, серверный рендер) base неизвестен — считаем его корнем.
+  const base = import.meta.env?.BASE_URL ?? "/";
+  return `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+}
+
 /** Короткая дата: 19.08.2026. */
 export function formatDate(iso: string): string {
   return new Intl.DateTimeFormat("ru-KZ", {
