@@ -45,7 +45,19 @@ export function ProductCard({
 
   return (
     <Card padded={false} className="flex flex-col overflow-hidden">
-      <div className="flex h-24 shrink-0 items-center justify-center overflow-hidden border-b border-border bg-muted/40 sm:h-32">
+      <div className="relative flex h-24 shrink-0 items-center justify-center overflow-hidden border-b border-border bg-muted/40 sm:h-32">
+        {/*
+          Источник карточки — внешний маркетплейс ТД. Метка только визуальная:
+          договор и поставщик категории от неё не зависят.
+        */}
+        {product.externalSource && (
+          <span
+            className="absolute right-2 top-2 rounded-md border border-border bg-card/90 px-1.5 py-0.5 text-xs font-semibold text-muted-foreground backdrop-blur"
+            title={`Источник карточки: ${product.externalSource}`}
+          >
+            {product.externalSource}
+          </span>
+        )}
         {product.imageUrl ? (
           <img
             src={assetUrl(product.imageUrl)}

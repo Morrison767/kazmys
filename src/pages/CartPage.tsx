@@ -77,6 +77,24 @@ export default function CartPage() {
     [lines, workshop?.id, allowedCategoryIds, limits, categories]
   );
 
+  /**
+   * Позиции группируются по внешнему источнику карточки — визуально, чтобы
+   * было видно, откуда пришли товары. Сумма и оформление остаются едиными:
+   * разбивка заказа по поставщикам — отдельная задача.
+   */
+  const groupedLines = useMemo(() => {
+    const groups: Array<{ source: string | null; items: typeof lines }> = [];
+    for (const line of lines) {
+      const source = line.product.externalSource ?? null;
+      const group = groups.find((g) => g.source === source);
+      if (group) group.items.push(line);
+      else groups.push({ source, items: [line] });
+    }
+    return groups;
+  }, [lines]);
+
+  const showSourceGroups = groupedLines.length > 1;
+
   const submitLabel =
     check.verdict === "auto"
       ? "Оформить заказ"
@@ -171,7 +189,21 @@ export default function CartPage() {
             </div>
 
             <ul className="divide-y divide-border">
-              {lines.map(({ product, quantity, lineTotal }) => {
+              {groupedLines.flatMap((group) => [
+                showSourceGroups ? (
+                  <li
+                    key={`head-${group.source ?? "own"}`}
+                    className="flex items-center justify-between gap-2 bg-muted/40 px-4 py-2 sm:px-5"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {group.source ?? "Каталог поставщика категории"}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {group.items.length} поз.
+                    </span>
+                  </li>
+                ) : null,
+                ...group.items.map(({ product, quantity, lineTotal }) => {
                 const stock =
                   product.stock.find((s) => s.warehouseId === warehouse?.id)
                     ?.quantity ?? 0;
@@ -225,7 +257,8 @@ export default function CartPage() {
                     </div>
                   </li>
                 );
-              })}
+              }),
+              ])}
             </ul>
 
             <div className="flex flex-col gap-1 border-t border-border bg-muted/30 px-5 py-4 text-sm">

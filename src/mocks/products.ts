@@ -32,6 +32,7 @@ interface ProductRow {
   primaryRegionId: string;
   serviceLifeDays?: number;
   imageUrl?: string;
+  externalSource?: string;
 }
 
 const PRODUCT_ROWS: ProductRow[] = [
@@ -105,7 +106,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Lamed"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-004",
@@ -129,7 +131,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "TSSP"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-005",
@@ -250,7 +253,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "TSSP"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-010",
@@ -274,7 +278,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Garwin"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-011",
@@ -389,7 +394,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    externalSource: "TSSP"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-016",
@@ -418,7 +424,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "Garwin"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-017",
@@ -529,7 +536,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "TSSP"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-022",
@@ -611,7 +619,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "Lamed"
   },
   {
     id: "prd-hozyaystvennye-ofisnye-025",
@@ -707,7 +716,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "TSSP"
   },
   {
     id: "prd-specodezhda-i-004",
@@ -760,7 +770,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-006",
@@ -861,7 +872,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-010",
@@ -905,7 +917,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    imageUrl: "/products/botinki.jpg"
+    imageUrl: "/products/botinki.jpg",
+    externalSource: "TSSP"
   },
   {
     id: "prd-specodezhda-i-012",
@@ -973,7 +986,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-015",
@@ -1055,7 +1069,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-018",
@@ -1084,7 +1099,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-019",
@@ -1161,7 +1177,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-022",
@@ -1180,7 +1197,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-023",
@@ -1228,7 +1246,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    externalSource: "Garwin"
   },
   {
     id: "prd-specodezhda-i-025",
@@ -1466,7 +1485,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
     serviceLifeDays: 40,
-    imageUrl: "/products/sverlo.jpg"
+    imageUrl: "/products/sverlo.jpg",
+    externalSource: "TSSP"
   },
   {
     id: "prd-instrumenty-i-008",
@@ -1561,7 +1581,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 120
+    serviceLifeDays: 120,
+    externalSource: "TSSP"
   },
   {
     id: "prd-instrumenty-i-012",
@@ -1586,7 +1607,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 100
+    serviceLifeDays: 100,
+    externalSource: "TSSP"
   },
   {
     id: "prd-instrumenty-i-013",
@@ -1631,7 +1653,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 50
+    serviceLifeDays: 50,
+    externalSource: "TSSP"
   },
   {
     id: "prd-instrumenty-i-015",
@@ -1837,7 +1860,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 100
+    serviceLifeDays: 100,
+    externalSource: "Garwin"
   },
   {
     id: "prd-instrumenty-i-023",
@@ -1878,7 +1902,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
     serviceLifeDays: 65,
-    imageUrl: "/products/napilnik.png"
+    imageUrl: "/products/napilnik.png",
+    externalSource: "TSSP"
   },
   {
     id: "prd-rashodnye-materialy-001",
@@ -1908,7 +1933,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 25
+    serviceLifeDays: 25,
+    externalSource: "TSSP"
   },
   {
     id: "prd-rashodnye-materialy-002",
@@ -1928,7 +1954,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 60
+    serviceLifeDays: 60,
+    externalSource: "TSSP"
   },
   {
     id: "prd-rashodnye-materialy-003",
@@ -1973,7 +2000,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 85
+    serviceLifeDays: 85,
+    externalSource: "Garwin"
   },
   {
     id: "prd-rashodnye-materialy-005",
@@ -2129,7 +2157,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
     serviceLifeDays: 35,
-    imageUrl: "/products/krug-shlif.jpg"
+    imageUrl: "/products/krug-shlif.jpg",
+    externalSource: "TSSP"
   },
   {
     id: "prd-rashodnye-materialy-011",
@@ -2304,7 +2333,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 50
+    serviceLifeDays: 50,
+    externalSource: "Lamed"
   },
   {
     id: "prd-rashodnye-materialy-018",
@@ -2375,7 +2405,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    externalSource: "Lamed"
   },
   {
     id: "prd-rashodnye-materialy-021",
@@ -2460,7 +2491,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    externalSource: "Lamed"
   },
   {
     id: "prd-rashodnye-materialy-024",
@@ -2515,7 +2547,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 85
+    serviceLifeDays: 85,
+    externalSource: "Lamed"
   },
   {
     id: "prd-rashodnye-materialy-026",
@@ -2609,7 +2642,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    externalSource: "TSSP"
   },
   {
     id: "prd-metizy-i-003",
@@ -2686,7 +2720,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Lamed"
   },
   {
     id: "prd-metizy-i-006",
@@ -2777,7 +2812,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "Garwin"
   },
   {
     id: "prd-metizy-i-010",
@@ -2839,7 +2875,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "TSSP"
   },
   {
     id: "prd-metizy-i-013",
@@ -2897,7 +2934,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "Lamed"
   },
   {
     id: "prd-metizy-i-015",
@@ -2964,7 +3002,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "TSSP"
   },
   {
     id: "prd-metizy-i-018",
@@ -2993,7 +3032,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "TSSP"
   },
   {
     id: "prd-metizy-i-019",
@@ -3046,7 +3086,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "Lamed"
   },
   {
     id: "prd-metizy-i-021",
@@ -3161,7 +3202,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    externalSource: "Lamed"
   },
   {
     id: "prd-elektrotehnika-i-001",
@@ -3186,7 +3228,8 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    imageUrl: "/products/vyklyuchatel.jpg"
+    imageUrl: "/products/vyklyuchatel.jpg",
+    externalSource: "Garwin"
   },
   {
     id: "prd-elektrotehnika-i-002",
@@ -3321,7 +3364,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "TSSP"
   },
   {
     id: "prd-elektrotehnika-i-007",
@@ -3450,7 +3494,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    externalSource: "TSSP"
   },
   {
     id: "prd-elektrotehnika-i-013",
@@ -3527,7 +3572,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "Lamed"
   },
   {
     id: "prd-elektrotehnika-i-016",
@@ -3628,7 +3674,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    externalSource: "Garwin"
   },
   {
     id: "prd-elektrotehnika-i-020",
@@ -3647,7 +3694,8 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    externalSource: "TSSP"
   },
   {
     id: "prd-elektrotehnika-i-021",

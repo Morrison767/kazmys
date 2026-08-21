@@ -225,6 +225,22 @@ function serviceLifeOf(kindName, sourceName) {
   return pick(`life:${sourceName}`, band[0], band[1], 5);
 }
 
+/* ————————————————————— Внешние источники ————————————————————— */
+
+/**
+ * Часть карточек подтянута из внешних маркетплейсов, которыми пользуется
+ * Торговый Дом. Это визуальный атрибут: рамочный договор и поставщик
+ * категории от источника не зависят.
+ */
+const EXTERNAL_SOURCES = ["Garwin", "Lamed", "TSSP"];
+
+/** Источник примерно у каждой третьей позиции, распределение стабильное. */
+function externalSourceOf(productId) {
+  const bucket = hash(`source:${productId}`) % 3;
+  if (bucket !== 0) return undefined;
+  return EXTERNAL_SOURCES[hash(`market:${productId}`) % EXTERNAL_SOURCES.length];
+}
+
 /* —————————————————————— Остатки на РЕСХ —————————————————————— */
 
 const WAREHOUSES = [
@@ -357,6 +373,7 @@ for (const root of selection.roots) {
           primaryRegionId: stock[0].regionId,
           ...(serviceLifeDays ? { serviceLifeDays } : {}),
           ...(IMAGES[id] ? { imageUrl: IMAGES[id] } : {}),
+          ...(externalSourceOf(id) ? { externalSource: externalSourceOf(id) } : {}),
         });
       }
     }
@@ -510,6 +527,7 @@ interface ProductRow {
   primaryRegionId: string;
   serviceLifeDays?: number;
   imageUrl?: string;
+  externalSource?: string;
 }
 
 const PRODUCT_ROWS: ProductRow[] = ${ts(products)};
