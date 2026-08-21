@@ -68,6 +68,12 @@ export interface Supplier {
   productCount?: number;
 }
 
+/** Характеристика позиции для карточки товара: «Артикул» → «KM-INS-1234». */
+export interface ProductSpec {
+  label: string;
+  value: string;
+}
+
 /** Единица измерения номенклатуры. */
 export type UnitOfMeasure =
   | "шт"
@@ -116,6 +122,8 @@ export interface Product {
   primaryRegionId: string;
   imageUrl?: string;
   description?: string;
+  /** Характеристики для страницы товара (2–4 пункта). */
+  specs?: ProductSpec[];
   /** Нормативный срок службы, дней — база для аналитики ходимости. */
   serviceLifeDays?: number;
   /**

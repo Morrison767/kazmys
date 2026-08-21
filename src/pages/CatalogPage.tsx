@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   AlertTriangle,
   LayoutGrid,
@@ -40,8 +40,37 @@ export default function CatalogPage() {
   const addToCart = useCartStore((s) => s.add);
   const cartItems = useCartStore((s) => s.items);
 
-  const [selection, setSelection] = useState<CategorySelection>(EMPTY_SELECTION);
-  const [query, setQuery] = useState("");
+  /**
+   * Отбор каталога живёт в адресной строке: так он сохраняется при переходе
+   * на страницу товара и обратно, а ссылку можно передать коллеге.
+   */
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("q") ?? "";
+  const selection: CategorySelection = useMemo(
+    () => ({
+      rootId: searchParams.get("root"),
+      groupId: searchParams.get("group"),
+      kindId: searchParams.get("kind"),
+    }),
+    [searchParams]
+  );
+
+  const updateParams = (patch: Record<string, string | null>) => {
+    const next = new URLSearchParams(searchParams);
+    for (const [key, value] of Object.entries(patch)) {
+      if (value) next.set(key, value);
+      else next.delete(key);
+    }
+    setSearchParams(next, { replace: true });
+  };
+
+  const setQuery = (value: string) => updateParams({ q: value || null });
+  const setSelection = (next: CategorySelection) =>
+    updateParams({
+      root: next.rootId,
+      group: next.groupId,
+      kind: next.kindId,
+    });
 
   /** Число групп и видов в выбранной ветке — для подписи под поиском. */
   const groups = useMemo(
@@ -294,6 +323,9 @@ export default function CatalogPage() {
                 <ProductCard
                   key={product.id}
                   product={product}
+                  href={`/catalog/${product.id}${
+                    searchParams.toString() ? `?${searchParams}` : ""
+                  }`}
                   categoryPath={pathOf(product.categoryId)}
                   purchaseCategoryName={categoryName(
                     rootCategoryId(product.categoryId)

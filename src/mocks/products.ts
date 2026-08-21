@@ -33,6 +33,8 @@ interface ProductRow {
   serviceLifeDays?: number;
   imageUrl?: string;
   externalSource?: string;
+  description?: string;
+  specs?: Array<{ label: string; value: string }>;
 }
 
 const PRODUCT_ROWS: ProductRow[] = [
@@ -58,7 +60,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Бланки и формы» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-8597"
+      },
+      {
+        label: "Формат",
+        value: "A3"
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-002",
@@ -77,7 +94,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Бланки и формы» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-6978"
+      },
+      {
+        label: "Размер",
+        value: "55 мм"
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-003",
@@ -107,7 +139,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Бланки и формы» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-5359"
+      },
+      {
+        label: "Формат",
+        value: "A4"
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-004",
@@ -132,7 +179,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Папки» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-3740"
+      },
+      {
+        label: "Формат",
+        value: "A4"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-005",
@@ -152,7 +214,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    imageUrl: "/products/papka.jpg"
+    imageUrl: "/products/papka.jpg",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Папки» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-2121"
+      },
+      {
+        label: "Формат",
+        value: "A4"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-006",
@@ -181,7 +258,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Папки» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-9502"
+      },
+      {
+        label: "Формат",
+        value: "A4"
+      },
+      {
+        label: "Материал",
+        value: "РЕЗИН"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-007",
@@ -205,7 +301,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Ручки и карандаши» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-7883"
+      },
+      {
+        label: "В упаковке",
+        value: "1 шт"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-008",
@@ -224,7 +335,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Ручки и карандаши» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-6264"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-009",
@@ -254,7 +376,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Ручки и карандаши» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-4645"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-010",
@@ -279,7 +412,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Тарелки» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-6407"
+      },
+      {
+        label: "В упаковке",
+        value: "6 шт"
+      },
+      {
+        label: "Материал",
+        value: "ФАРФОР"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-011",
@@ -308,7 +460,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Тарелки» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-8026"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-012",
@@ -327,7 +490,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Тарелки» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-9645"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-013",
@@ -351,7 +525,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Столовые приборы» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-2264"
+      },
+      {
+        label: "В упаковке",
+        value: "12 шт"
+      },
+      {
+        label: "Единица измерения",
+        value: "набор"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-014",
@@ -370,7 +559,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Столовые приборы» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-8931"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-015",
@@ -395,7 +595,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Столовые приборы» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-1550"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-016",
@@ -425,7 +636,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Кухонный инвентарь» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-3169"
+      },
+      {
+        label: "Материал",
+        value: "АЛЮМИНИЙ"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-017",
@@ -444,7 +670,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Кухонный инвентарь» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-4788"
+      },
+      {
+        label: "Материал",
+        value: "НЕРЖ"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-018",
@@ -473,7 +714,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Кухонный инвентарь» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-2455"
+      },
+      {
+        label: "Объём",
+        value: "5 л"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-019",
@@ -493,7 +749,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    imageUrl: "/products/kartridzh.jpg"
+    imageUrl: "/products/kartridzh.jpg",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Картриджи для принтеров» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-4074"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-020",
@@ -512,7 +779,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Принтеры» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-2598"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-021",
@@ -537,7 +819,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Принтеры» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-9979"
+      },
+      {
+        label: "Формат",
+        value: "A3"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-022",
@@ -561,7 +862,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Принтеры» — для повседневных нужд подразделений. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-5836"
+      },
+      {
+        label: "Формат",
+        value: "A4"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-023",
@@ -590,7 +910,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Стиральные машины» — для повседневных нужд подразделений. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-4217"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-024",
@@ -620,7 +955,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Стиральные машины» — для повседневных нужд подразделений. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-9074"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-hozyaystvennye-ofisnye-025",
@@ -639,7 +989,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Позиция административно-хозяйственного обеспечения из группы «Стиральные машины» — для повседневных нужд подразделений. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-HOZ-7455"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-001",
@@ -663,7 +1028,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Спецодежда и СИЗ из группы «Утепленные костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-1735"
+      },
+      {
+        label: "Размер",
+        value: "88-92/158-164"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-002",
@@ -687,7 +1071,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Спецодежда и СИЗ из группы «Утепленные костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-6592"
+      },
+      {
+        label: "Размер",
+        value: "88-92/170-176"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-003",
@@ -717,7 +1120,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Спецодежда и СИЗ из группы «Утепленные костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-4973"
+      },
+      {
+        label: "Размер",
+        value: "96-100/158-164"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-004",
@@ -741,7 +1163,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Спецодежда и СИЗ из группы «Защитные костюмы от электрической дуги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-5878"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-005",
@@ -771,7 +1204,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Защитные костюмы от электрической дуги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-4259"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-006",
@@ -800,7 +1244,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Спецодежда и СИЗ из группы «Защитные костюмы от электрической дуги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-9116"
+      },
+      {
+        label: "Размер",
+        value: "88-92/170-176"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-007",
@@ -819,7 +1278,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Спецодежда и СИЗ из группы «Летние костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-7497"
+      },
+      {
+        label: "Размер",
+        value: "96-100/182-188"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-008",
@@ -843,7 +1321,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Спецодежда и СИЗ из группы «Летние костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-7306"
+      },
+      {
+        label: "Размер",
+        value: "104-108/170-176"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-009",
@@ -873,7 +1370,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Летние костюмы» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-5687"
+      },
+      {
+        label: "Размер",
+        value: "104-108/182-188"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-010",
@@ -897,7 +1413,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Спецодежда и СИЗ из группы «Защитная спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-2687"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 13385-78"
+      },
+      {
+        label: "Размер",
+        value: "30"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-011",
@@ -918,7 +1453,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
     imageUrl: "/products/botinki.jpg",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Спецодежда и СИЗ из группы «Защитная спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-1068"
+      },
+      {
+        label: "Размер",
+        value: "38"
+      },
+      {
+        label: "Материал",
+        value: "КОЖ"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-012",
@@ -937,7 +1491,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Спецодежда и СИЗ из группы «Защитная спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-5925"
+      },
+      {
+        label: "Размер",
+        value: "39"
+      },
+      {
+        label: "Материал",
+        value: "КОЖ"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-013",
@@ -967,7 +1540,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    imageUrl: "/products/sapogi.jpg"
+    imageUrl: "/products/sapogi.jpg",
+    description: "Спецодежда и СИЗ из группы «Резиновые сапоги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-4306"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 12.4.072-79"
+      },
+      {
+        label: "Размер",
+        value: "41"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-014",
@@ -987,7 +1579,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Резиновые сапоги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-5211"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 12.4.072-79"
+      },
+      {
+        label: "Размер",
+        value: "44"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-015",
@@ -1016,7 +1627,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Спецодежда и СИЗ из группы «Резиновые сапоги» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-3592"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 12.4.072-79"
+      },
+      {
+        label: "Размер",
+        value: "42"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-016",
@@ -1045,7 +1675,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Спецодежда и СИЗ из группы «Слипоны и легкая спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-8449"
+      },
+      {
+        label: "Размер",
+        value: "37"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-017",
@@ -1070,7 +1715,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Слипоны и легкая спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-6830"
+      },
+      {
+        label: "Размер",
+        value: "38"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-018",
@@ -1100,7 +1760,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Слипоны и легкая спецобувь» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-7735"
+      },
+      {
+        label: "Размер",
+        value: "39"
+      },
+      {
+        label: "Единица измерения",
+        value: "пара"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-019",
@@ -1124,7 +1799,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Спецодежда и СИЗ из группы «Утепленные жилеты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-6116"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 25295-2003"
+      },
+      {
+        label: "Размер",
+        value: "88-92/158-164"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-020",
@@ -1153,7 +1847,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Спецодежда и СИЗ из группы «Утепленные жилеты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-1972"
+      },
+      {
+        label: "Размер",
+        value: "88-92/170-176"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-021",
@@ -1178,7 +1887,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Утепленные жилеты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-9353"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 25295-2003"
+      },
+      {
+        label: "Размер",
+        value: "96-100/170-176"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-022",
@@ -1198,7 +1926,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Нательное белье» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-7734"
+      },
+      {
+        label: "Единица измерения",
+        value: "компл"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-023",
@@ -1227,7 +1966,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Спецодежда и СИЗ из группы «Нательное белье» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-6115"
+      },
+      {
+        label: "Размер",
+        value: "88-92/182-188"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-024",
@@ -1247,7 +2005,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Спецодежда и СИЗ из группы «Нательное белье» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-8448"
+      },
+      {
+        label: "Размер",
+        value: "88-92/194-200"
+      },
+      {
+        label: "Материал",
+        value: "Х/Б"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-025",
@@ -1276,7 +2053,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Спецодежда и СИЗ из группы «Рабочие халаты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-6829"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-026",
@@ -1300,7 +2088,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Спецодежда и СИЗ из группы «Рабочие халаты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-5210"
+      },
+      {
+        label: "Размер",
+        value: "88-92/170-176"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-specodezhda-i-027",
@@ -1319,7 +2122,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Спецодежда и СИЗ из группы «Рабочие халаты» — выдаётся работникам по утверждённым нормам обеспечения. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-SPE-3591"
+      },
+      {
+        label: "Размер",
+        value: "88-92/158-164"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-001",
@@ -1338,7 +2156,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Инструмент из группы «Манометры» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-2429"
+      },
+      {
+        label: "Степень защиты",
+        value: "IP40"
+      },
+      {
+        label: "Резьба",
+        value: "M12×1,5"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-002",
@@ -1362,7 +2199,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Инструмент из группы «Манометры» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-9810"
+      },
+      {
+        label: "Степень защиты",
+        value: "IP53"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-003",
@@ -1392,7 +2248,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    imageUrl: "/products/manometr.jpg"
+    imageUrl: "/products/manometr.jpg",
+    description: "Инструмент из группы «Манометры» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-8191"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-004",
@@ -1411,7 +2282,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Инструмент из группы «Приборы для контроля электрооборудования» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-6572"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-005",
@@ -1435,7 +2321,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Инструмент из группы «Приборы для контроля электрооборудования» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-4953"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-006",
@@ -1464,7 +2365,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Инструмент из группы «Приборы для контроля электрооборудования» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-3334"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-007",
@@ -1486,7 +2402,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryRegionId: "reg-krg",
     serviceLifeDays: 40,
     imageUrl: "/products/sverlo.jpg",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Инструмент из группы «Сверла» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-1715"
+      },
+      {
+        label: "Размер",
+        value: "42 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-008",
@@ -1506,7 +2441,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 75
+    serviceLifeDays: 75,
+    description: "Инструмент из группы «Сверла» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-8000"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "75 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-009",
@@ -1531,7 +2481,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 65
+    serviceLifeDays: 65,
+    description: "Инструмент из группы «Сверла» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-6381"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "65 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-010",
@@ -1551,7 +2516,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 100
+    serviceLifeDays: 100,
+    description: "Инструмент из группы «Фрезы» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-1993"
+      },
+      {
+        label: "Диаметр",
+        value: "40 мм"
+      },
+      {
+        label: "Размер",
+        value: "40 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "100 дн."
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-011",
@@ -1582,7 +2566,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
     serviceLifeDays: 120,
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Инструмент из группы «Фрезы» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-9374"
+      },
+      {
+        label: "Диаметр",
+        value: "80 мм"
+      },
+      {
+        label: "Размер",
+        value: "80 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "120 дн."
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-012",
@@ -1608,7 +2611,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
     serviceLifeDays: 100,
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Инструмент из группы «Фрезы» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-7755"
+      },
+      {
+        label: "Диаметр",
+        value: "25 мм"
+      },
+      {
+        label: "Размер",
+        value: "25 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "100 дн."
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-013",
@@ -1628,7 +2650,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    description: "Инструмент из группы «Метчики» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-6136"
+      },
+      {
+        label: "Резьба",
+        value: "M22×1,5"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-014",
@@ -1654,7 +2695,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
     serviceLifeDays: 50,
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Инструмент из группы «Метчики» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-8469"
+      },
+      {
+        label: "Резьба",
+        value: "M14×2"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "50 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-015",
@@ -1674,7 +2734,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 90
+    serviceLifeDays: 90,
+    description: "Инструмент из группы «Метчики» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-6850"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 3266-81"
+      },
+      {
+        label: "Резьба",
+        value: "M14×1,5"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "90 дн."
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-016",
@@ -1705,7 +2784,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
     serviceLifeDays: 410,
-    imageUrl: "/products/trehcotka.jpg"
+    imageUrl: "/products/trehcotka.jpg",
+    description: "Инструмент из группы «Гаечные ключи» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-5231"
+      },
+      {
+        label: "Размер",
+        value: "800 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "410 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-017",
@@ -1730,7 +2828,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 195
+    serviceLifeDays: 195,
+    description: "Инструмент из группы «Гаечные ключи» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-3612"
+      },
+      {
+        label: "В упаковке",
+        value: "17 предм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "195 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "набор"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-018",
@@ -1755,7 +2872,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 520
+    serviceLifeDays: 520,
+    description: "Инструмент из группы «Гаечные ключи» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-7041"
+      },
+      {
+        label: "Размер",
+        value: "200 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "520 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-019",
@@ -1775,7 +2911,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 185
+    serviceLifeDays: 185,
+    description: "Инструмент из группы «Отвертки» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-5422"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "185 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-020",
@@ -1800,7 +2951,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 150
+    serviceLifeDays: 150,
+    description: "Инструмент из группы «Отвертки» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-5802"
+      },
+      {
+        label: "В упаковке",
+        value: "6 шт"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "150 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "набор"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-021",
@@ -1830,7 +3000,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 210
+    serviceLifeDays: 210,
+    description: "Инструмент из группы «Отвертки» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-7421"
+      },
+      {
+        label: "В упаковке",
+        value: "7 предмет"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "210 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "набор"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-022",
@@ -1861,7 +3050,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
     serviceLifeDays: 100,
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Инструмент из группы «Напильники» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-2564"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "100 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-023",
@@ -1881,7 +3085,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 105
+    serviceLifeDays: 105,
+    description: "Инструмент из группы «Напильники» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-4183"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "105 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-instrumenty-i-024",
@@ -1903,7 +3122,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryRegionId: "reg-blh",
     serviceLifeDays: 65,
     imageUrl: "/products/napilnik.png",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Инструмент из группы «Напильники» — применяется при ремонтных и монтажных работах на предприятиях Группы. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-INS-8326"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 1465-80"
+      },
+      {
+        label: "Размер",
+        value: "150 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "65 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-001",
@@ -1934,7 +3172,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
     serviceLifeDays: 25,
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Расходный материал из группы «Твердосплавные пластины» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-3583"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "25 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-002",
@@ -1955,7 +3208,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
     serviceLifeDays: 60,
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Расходный материал из группы «Твердосплавные пластины» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-5202"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "60 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-003",
@@ -1980,7 +3248,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 50
+    serviceLifeDays: 50,
+    description: "Расходный материал из группы «Твердосплавные пластины» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-6821"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "50 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "упак"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-004",
@@ -2001,7 +3284,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
     serviceLifeDays: 85,
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Расходный материал из группы «Буровые коронки» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-4488"
+      },
+      {
+        label: "Диаметр",
+        value: "51 мм"
+      },
+      {
+        label: "Размер",
+        value: "51 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "85 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-005",
@@ -2026,7 +3328,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 80
+    serviceLifeDays: 80,
+    description: "Расходный материал из группы «Буровые коронки» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-6107"
+      },
+      {
+        label: "Диаметр",
+        value: "95,6 мм"
+      },
+      {
+        label: "Размер",
+        value: "95,6 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "80 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-006",
@@ -2056,7 +3377,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 120
+    serviceLifeDays: 120,
+    description: "Расходный материал из группы «Буровые коронки» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-7726"
+      },
+      {
+        label: "Диаметр",
+        value: "204 мм"
+      },
+      {
+        label: "Размер",
+        value: "204 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "120 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-007",
@@ -2076,7 +3416,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 180
+    serviceLifeDays: 180,
+    description: "Расходный материал из группы «Цанги» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-9345"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "180 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-008",
@@ -2106,7 +3461,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 335
+    serviceLifeDays: 335,
+    description: "Расходный материал из группы «Цанги» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-7012"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "335 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-009",
@@ -2126,7 +3496,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 360
+    serviceLifeDays: 360,
+    description: "Расходный материал из группы «Цанги» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-8631"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "360 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-010",
@@ -2158,7 +3543,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryRegionId: "reg-krg",
     serviceLifeDays: 35,
     imageUrl: "/products/krug-shlif.jpg",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Расходный материал из группы «Шлифовальные круги» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-5773"
+      },
+      {
+        label: "Номинальный ток",
+        value: "25 А"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "35 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-011",
@@ -2183,7 +3587,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 15
+    serviceLifeDays: 15,
+    description: "Расходный материал из группы «Шлифовальные круги» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-4154"
+      },
+      {
+        label: "Номинальный ток",
+        value: "25 А"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "15 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-012",
@@ -2203,7 +3626,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 45
+    serviceLifeDays: 45,
+    description: "Расходный материал из группы «Шлифовальные круги» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-2535"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "45 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-013",
@@ -2233,7 +3671,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 20
+    serviceLifeDays: 20,
+    description: "Расходный материал из группы «Шлифовальные шкурки» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-9916"
+      },
+      {
+        label: "Размер",
+        value: "50"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "20 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "рул"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-014",
@@ -2258,7 +3715,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 60
+    serviceLifeDays: 60,
+    description: "Расходный материал из группы «Шлифовальные шкурки» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-8297"
+      },
+      {
+        label: "Размер",
+        value: "720 мм"
+      },
+      {
+        label: "Номинальный ток",
+        value: "14 А"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "60 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-015",
@@ -2278,7 +3754,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    description: "Расходный материал из группы «Шлифовальные шкурки» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-6678"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "рул"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-016",
@@ -2308,7 +3799,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 65
+    serviceLifeDays: 65,
+    description: "Расходный материал из группы «Проволочные ерши» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-5059"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "65 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-017",
@@ -2334,7 +3840,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
     serviceLifeDays: 50,
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Расходный материал из группы «Проволочные ерши» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-3440"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "50 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-018",
@@ -2354,7 +3875,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 75
+    serviceLifeDays: 75,
+    description: "Расходный материал из группы «Проволочные ерши» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-1821"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "75 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-019",
@@ -2385,7 +3921,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
     serviceLifeDays: 30,
-    imageUrl: "/products/elektrody.jpg"
+    imageUrl: "/products/elektrody.jpg",
+    description: "Расходный материал из группы «Сварочные электроды» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-9202"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "30 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "кг"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-020",
@@ -2406,7 +3957,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
     serviceLifeDays: 40,
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Расходный материал из группы «Сварочные электроды» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-4290"
+      },
+      {
+        label: "Диаметр",
+        value: "2 мм"
+      },
+      {
+        label: "Размер",
+        value: "2 мм"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-021",
@@ -2436,7 +4006,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    description: "Расходный материал из группы «Сварочные электроды» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-2671"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 9466-75"
+      },
+      {
+        label: "Диаметр",
+        value: "4 мм"
+      },
+      {
+        label: "Размер",
+        value: "4 мм"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-022",
@@ -2466,7 +4055,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 70
+    serviceLifeDays: 70,
+    description: "Расходный материал из группы «Расходные материалы для сварочных горелок» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-7528"
+      },
+      {
+        label: "Резьба",
+        value: "M8×25"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "70 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-023",
@@ -2492,7 +4100,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
     serviceLifeDays: 40,
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Расходный материал из группы «Расходные материалы для сварочных горелок» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-5909"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-024",
@@ -2522,7 +4145,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    serviceLifeDays: 60
+    serviceLifeDays: 60,
+    description: "Расходный материал из группы «Расходные материалы для сварочных горелок» — списывается по факту выработки. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-6814"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "60 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-025",
@@ -2548,7 +4186,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
     serviceLifeDays: 85,
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Расходный материал из группы «Сопла для резки» — списывается по факту выработки. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-5195"
+      },
+      {
+        label: "Номинальный ток",
+        value: "130 А"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "85 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-026",
@@ -2573,7 +4230,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    serviceLifeDays: 30
+    serviceLifeDays: 30,
+    description: "Расходный материал из группы «Сопла для резки» — списывается по факту выработки. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-1052"
+      },
+      {
+        label: "Номинальный ток",
+        value: "30 А"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "30 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-rashodnye-materialy-027",
@@ -2593,7 +4269,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    serviceLifeDays: 40
+    serviceLifeDays: 40,
+    description: "Расходный материал из группы «Сопла для резки» — списывается по факту выработки. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-RAS-8433"
+      },
+      {
+        label: "Материал",
+        value: "КОЖ"
+      },
+      {
+        label: "Нормативный срок службы",
+        value: "40 дн."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-001",
@@ -2618,7 +4313,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    imageUrl: "/products/bolt.jpg"
+    imageUrl: "/products/bolt.jpg",
+    description: "Крепёжное изделие из группы «Болты» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-7947"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-002",
@@ -2643,7 +4349,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Крепёжное изделие из группы «Болты» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-3804"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-003",
@@ -2672,7 +4389,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Крепёжное изделие из группы «Болты» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-2185"
+      },
+      {
+        label: "Размер",
+        value: "3 мм"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-004",
@@ -2701,7 +4433,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Крепёжное изделие из группы «Гайки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-7042"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-005",
@@ -2721,7 +4464,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Крепёжное изделие из группы «Гайки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-5423"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-006",
@@ -2740,7 +4494,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Крепёжное изделие из группы «Гайки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-1280"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-007",
@@ -2764,7 +4529,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Крепёжное изделие из группы «Шайбы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-8661"
+      },
+      {
+        label: "Резьба",
+        value: "M16"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-008",
@@ -2793,7 +4573,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Крепёжное изделие из группы «Шайбы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-5614"
+      },
+      {
+        label: "Резьба",
+        value: "M16"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-009",
@@ -2813,7 +4608,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Крепёжное изделие из группы «Шайбы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-3995"
+      },
+      {
+        label: "Стандарт",
+        value: "ГОСТ 11371-78"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-010",
@@ -2837,7 +4647,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Крепёжное изделие из группы «Хомуты» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-5757"
+      },
+      {
+        label: "Размер",
+        value: "16 мм"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-011",
@@ -2856,7 +4681,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Крепёжное изделие из группы «Поддерживающие зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-7376"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-012",
@@ -2876,7 +4712,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Крепёжное изделие из группы «Поддерживающие зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-2519"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-013",
@@ -2905,7 +4752,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Крепёжное изделие из группы «Поддерживающие зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-4138"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-014",
@@ -2935,7 +4793,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Крепёжное изделие из группы «Канатные зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-8281"
+      },
+      {
+        label: "Стандарт",
+        value: "DIN 741"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-015",
@@ -2959,7 +4832,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Крепёжное изделие из группы «Канатные зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-9900"
+      },
+      {
+        label: "Стандарт",
+        value: "DIN 741"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-016",
@@ -2983,7 +4871,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Крепёжное изделие из группы «Канатные зажимы» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-5043"
+      },
+      {
+        label: "Стандарт",
+        value: "DIN 741"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-017",
@@ -3003,7 +4906,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Крепёжное изделие из группы «Проушины» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-6662"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-018",
@@ -3033,7 +4947,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Крепёжное изделие из группы «Проушины» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-9709"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-019",
@@ -3057,7 +4982,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Крепёжное изделие из группы «Проушины» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-2328"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-020",
@@ -3087,7 +5023,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Крепёжное изделие из группы «Монтажные клинья» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-8184"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-021",
@@ -3111,7 +5058,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Крепёжное изделие из группы «Монтажные клинья» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-6565"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-022",
@@ -3130,7 +5088,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Крепёжное изделие из группы «Монтажные клинья» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-4946"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-023",
@@ -3159,7 +5128,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Крепёжное изделие из группы «Шпонки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-3327"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-024",
@@ -3183,7 +5163,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Крепёжное изделие из группы «Шпонки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-1708"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-metizy-i-025",
@@ -3203,7 +5194,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-krg",
     primaryRegionId: "reg-krg",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Крепёжное изделие из группы «Шпонки» — применяется при ремонте и монтаже оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-MET-9089"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-001",
@@ -3229,7 +5231,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
     imageUrl: "/products/vyklyuchatel.jpg",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Электротехническое изделие из группы «Автоматические выключатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-1129"
+      },
+      {
+        label: "Номинальный ток",
+        value: "160 А"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-002",
@@ -3253,7 +5274,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Электротехническое изделие из группы «Автоматические выключатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-5728"
+      },
+      {
+        label: "Номинальный ток",
+        value: "2 А"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-003",
@@ -3282,7 +5322,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Датчики температуры» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-4109"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-004",
@@ -3306,7 +5361,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Электротехническое изделие из группы «Датчики температуры» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-5986"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-005",
@@ -3335,7 +5405,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Электротехническое изделие из группы «Датчики температуры» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-7605"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-006",
@@ -3365,7 +5450,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Электротехническое изделие из группы «Переключатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-2748"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-007",
@@ -3384,7 +5480,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Переключатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-4367"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-008",
@@ -3413,7 +5520,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Электротехническое изделие из группы «Переключатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-3462"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-009",
@@ -3432,7 +5550,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Электротехническое изделие из группы «Клеммы электрические» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-5081"
+      },
+      {
+        label: "Размер",
+        value: "4 мм"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-010",
@@ -3456,7 +5589,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Клеммы электрические» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-3745"
+      },
+      {
+        label: "В упаковке",
+        value: "100 шт"
+      },
+      {
+        label: "Стандарт",
+        value: "DIN 3240078"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-011",
@@ -3475,7 +5627,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Электротехническое изделие из группы «Клеммы электрические» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-5364"
+      },
+      {
+        label: "В упаковке",
+        value: "100 шт"
+      },
+      {
+        label: "Стандарт",
+        value: "DIN 3240079"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-012",
@@ -3495,7 +5666,22 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-zhz",
     primaryRegionId: "reg-zhz",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Электротехническое изделие из группы «Электротехнические шкафы и корпуса» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-9507"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-013",
@@ -3524,7 +5710,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Электротехническое изделие из группы «Электротехнические шкафы и корпуса» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-2126"
+      },
+      {
+        label: "Размер",
+        value: "250 мм"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-014",
@@ -3543,7 +5748,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Электротехнические шкафы и корпуса» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-1221"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-015",
@@ -3573,7 +5793,18 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "Lamed"
+    externalSource: "Lamed",
+    description: "Электротехническое изделие из группы «Электрические разъемы» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-2840"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-016",
@@ -3602,7 +5833,18 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Электротехническое изделие из группы «Электрические разъемы» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-6983"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-017",
@@ -3626,7 +5868,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Электротехническое изделие из группы «Электрические разъемы» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-8602"
+      },
+      {
+        label: "Степень защиты",
+        value: "IP68"
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-018",
@@ -3645,7 +5902,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Источники питания» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-8793"
+      },
+      {
+        label: "Напряжение",
+        value: "230 В"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-019",
@@ -3675,7 +5951,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-blh",
     primaryRegionId: "reg-blh",
-    externalSource: "Garwin"
+    externalSource: "Garwin",
+    description: "Электротехническое изделие из группы «Источники питания» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-1412"
+      },
+      {
+        label: "Мощность",
+        value: "1500 Вт"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-020",
@@ -3695,7 +5990,26 @@ const PRODUCT_ROWS: ProductRow[] = [
     ],
     primaryWarehouseId: "wh-chu",
     primaryRegionId: "reg-chu",
-    externalSource: "TSSP"
+    externalSource: "TSSP",
+    description: "Электротехническое изделие из группы «Источники питания» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-7700"
+      },
+      {
+        label: "Номинальный ток",
+        value: "2 А"
+      },
+      {
+        label: "Напряжение",
+        value: "24 В"
+      },
+      {
+        label: "Мощность",
+        value: "76 Вт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-021",
@@ -3724,7 +6038,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Промежуточные реле» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-9319"
+      },
+      {
+        label: "Напряжение",
+        value: "41 В"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-022",
@@ -3748,7 +6081,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Электротехническое изделие из группы «Промежуточные реле» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-1938"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-023",
@@ -3767,7 +6115,22 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-zhz",
-    primaryRegionId: "reg-zhz"
+    primaryRegionId: "reg-zhz",
+    description: "Электротехническое изделие из группы «Промежуточные реле» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Жезказган по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-3557"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-024",
@@ -3791,7 +6154,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-chu",
-    primaryRegionId: "reg-chu"
+    primaryRegionId: "reg-chu",
+    description: "Электротехническое изделие из группы «Пускатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Шатыркуль по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-1224"
+      },
+      {
+        label: "Номинальный ток",
+        value: "12 А"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-025",
@@ -3810,7 +6192,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-krg",
-    primaryRegionId: "reg-krg"
+    primaryRegionId: "reg-krg",
+    description: "Электротехническое изделие из группы «Пускатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Караганда по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-2843"
+      },
+      {
+        label: "Степень защиты",
+        value: "IP54"
+      },
+      {
+        label: "Номинальный ток",
+        value: "100 А"
+      },
+      {
+        label: "Напряжение",
+        value: "380 В"
+      }
+    ]
   },
   {
     id: "prd-elektrotehnika-i-026",
@@ -3839,7 +6240,26 @@ const PRODUCT_ROWS: ProductRow[] = [
       }
     ],
     primaryWarehouseId: "wh-blh",
-    primaryRegionId: "reg-blh"
+    primaryRegionId: "reg-blh",
+    description: "Электротехническое изделие из группы «Пускатели» — для систем питания и автоматизации оборудования. Поставка на РЕСХ Балхаш по рамочному договору категории.",
+    specs: [
+      {
+        label: "Артикул",
+        value: "KM-ELE-4462"
+      },
+      {
+        label: "Напряжение",
+        value: "380 В"
+      },
+      {
+        label: "Гарантия",
+        value: "12 мес."
+      },
+      {
+        label: "Единица измерения",
+        value: "шт"
+      }
+    ]
   }
 ];
 

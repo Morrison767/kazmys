@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Check, Package, ShoppingCart } from "lucide-react";
 
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
@@ -23,8 +24,11 @@ export function ProductCard({
   warehouseName,
   inCartQuantity,
   onAdd,
+  href,
 }: {
   product: Product;
+  /** Ссылка на страницу товара; без неё карточка некликабельна. */
+  href?: string;
   /** «Группа / Вид» — второй и третий уровни дерева. */
   categoryPath?: string;
   /** Раздел (категория закупа) — показывается бейджем. */
@@ -43,8 +47,26 @@ export function ProductCard({
   const available = stock?.quantity ?? 0;
   const isOutOfStock = available <= 0;
 
+  /**
+   * Клик по карточке ведёт на страницу товара, но степпер и «В корзину»
+   * остаются самостоятельными: ссылка накрывает только фото и описание.
+   */
+  const Info = href
+    ? ({ children }: { children: React.ReactNode }) => (
+        <Link
+          to={href}
+          className="flex min-w-0 flex-col gap-3 outline-none transition-colors hover:bg-muted/30 focus-visible:bg-muted/30"
+        >
+          {children}
+        </Link>
+      )
+    : ({ children }: { children: React.ReactNode }) => (
+        <div className="flex min-w-0 flex-col gap-3">{children}</div>
+      );
+
   return (
     <Card padded={false} className="flex flex-col overflow-hidden">
+      <Info>
       <div className="relative flex h-24 shrink-0 items-center justify-center overflow-hidden border-b border-border bg-muted/40 sm:h-32">
         {/*
           Источник карточки — внешний маркетплейс ТД. Метка только визуальная:
@@ -73,7 +95,7 @@ export function ProductCard({
         )}
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 p-3 sm:p-4">
+      <div className="flex min-w-0 flex-col gap-3 px-3 pb-3 pt-3 sm:px-4 sm:pt-4">
         <div className="min-w-0">
           <p
             className="line-clamp-2 text-sm font-semibold text-foreground"
@@ -98,7 +120,7 @@ export function ProductCard({
           </p>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-baseline gap-x-2 gap-y-1">
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="text-base font-bold tracking-tight text-foreground">
             {formatMoney(product.price)}
           </span>
@@ -106,7 +128,10 @@ export function ProductCard({
             за 1 {product.unit} · без НДС
           </span>
         </div>
+      </div>
+      </Info>
 
+      <div className="mt-auto flex min-w-0 flex-col gap-3 px-3 pb-3 sm:px-4 sm:pb-4">
         <div className="flex flex-wrap items-center gap-2">
           {isOutOfStock ? (
             <Badge tone="danger" dot>

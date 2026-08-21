@@ -225,6 +225,97 @@ function serviceLifeOf(kindName, sourceName) {
   return pick(`life:${sourceName}`, band[0], band[1], 5);
 }
 
+/* ———————————————— Описание и характеристики ———————————————— */
+
+/**
+ * Краткое описание позиции. Собирается из раздела, группы и вида: в источнике
+ * номенклатуры описания либо нет, либо это повтор названия в верхнем регистре.
+ */
+const DESCRIPTION_BY_ROOT = {
+  "Хозяйственные, офисные и канцелярские товары": (kind) =>
+    `Позиция административно-хозяйственного обеспечения из группы «${kind}» — для повседневных нужд подразделений.`,
+  "Спецодежда и средства защиты": (kind) =>
+    `Спецодежда и СИЗ из группы «${kind}» — выдаётся работникам по утверждённым нормам обеспечения.`,
+  "Инструменты и измерительная техника": (kind) =>
+    `Инструмент из группы «${kind}» — применяется при ремонтных и монтажных работах на предприятиях Группы.`,
+  "Расходные материалы и оснастка": (kind) =>
+    `Расходный материал из группы «${kind}» — списывается по факту выработки.`,
+  "Метизы и крепежные изделия": (kind) =>
+    `Крепёжное изделие из группы «${kind}» — применяется при ремонте и монтаже оборудования.`,
+  "Электротехника и автоматизация": (kind) =>
+    `Электротехническое изделие из группы «${kind}» — для систем питания и автоматизации оборудования.`,
+};
+
+function descriptionOf(rootName, kindName, warehouseName) {
+  const first =
+    DESCRIPTION_BY_ROOT[rootName]?.(kindName) ??
+    `Позиция раздела «${rootName}» из группы «${kindName}».`;
+  return `${first} Поставка на ${warehouseName} по рамочному договору категории.`;
+}
+
+/**
+ * Извлечение характеристик из названия. Границы слов заданы явно:
+ * \b в JS опирается на латиницу и цифры, поэтому на кириллице не работает.
+ */
+const EDGE = "(?:^|[\\s(,;])";
+const SPEC_PATTERNS = [
+  [new RegExp(`${EDGE}(?:формат\\s*)?[АA]([34])(?![\\d])`, "i"), "Формат", (m) => `A${m[1]}`],
+  [new RegExp(`(\\d+)\\s*(ШТ|ПРЕДМЕТ|ПРЕДМ|ПАР)(?![А-Яа-я])`, "i"), "В упаковке", (m) => `${m[1]} ${m[2].toLowerCase()}`],
+  [new RegExp(`ГОСТ\\s*([\\d.\\-]+)`, "i"), "Стандарт", (m) => `ГОСТ ${m[1]}`],
+  [new RegExp(`DIN\\s*(\\d+)`, "i"), "Стандарт", (m) => `DIN ${m[1]}`],
+  [new RegExp(`IP\\s?(\\d{2})(?![\\d])`, "i"), "Степень защиты", (m) => `IP${m[1]}`],
+  [new RegExp(`${EDGE}Р\\.?\\s?(\\d{2,3}-\\d{2,3}/\\d{2,3}-\\d{2,3})`, "i"), "Размер", (m) => m[1]],
+  [new RegExp(`${EDGE}Р\\.?\\s?(\\d{2})(?![\\d])`, "i"), "Размер", (m) => m[1]],
+  [new RegExp(`D\\s?(\\d+[,.]?\\d*)\\s*ММ`, "i"), "Диаметр", (m) => `${m[1]} мм`],
+  [new RegExp(`(\\d+[,.]?\\d*)\\s*ММ(?![А-Яа-я])`, "i"), "Размер", (m) => `${m[1]} мм`],
+  [new RegExp(`М(\\d+)[ХX](\\d+[,.]?\\d*)`, "i"), "Резьба", (m) => `M${m[1]}×${m[2]}`],
+  [new RegExp(`${EDGE}М(\\d{1,2})(?![\\dХXх])`), "Резьба", (m) => `M${m[1]}`],
+  [new RegExp(`(\\d+)\\s*А(?![А-Яа-я])`), "Номинальный ток", (m) => `${m[1]} А`],
+  [new RegExp(`(\\d+)\\s*В(?![А-Яа-я])`), "Напряжение", (m) => `${m[1]} В`],
+  [new RegExp(`(\\d+)\\s*ВТ(?![А-Яа-я])`, "i"), "Мощность", (m) => `${m[1]} Вт`],
+  [new RegExp(`(\\d+)\\s*Л(?![А-Яа-я])`), "Объём", (m) => `${m[1]} л`],
+  [new RegExp(`(Х/Б|БРЕЗЕНТ|КОЖ|НЕРЖ|ФАРФОР|АЛЮМИНИЙ|РЕЗИН|ЛАТЕКС)`, "i"), "Материал", (m) => m[1]],
+];
+
+/** Гарантия — только для оборудования и приборов, не для расходников. */
+const WARRANTY_KINDS = new Set([
+  "Принтеры",
+  "Стиральные машины",
+  "Манометры",
+  "Приборы для контроля электрооборудования",
+  "Источники питания",
+  "Автоматические выключатели",
+  "Датчики температуры",
+  "Пускатели",
+  "Промежуточные реле",
+  "Электротехнические шкафы и корпуса",
+]);
+
+function specsOf({ sourceName, kindName, sku, unit, serviceLifeDays }) {
+  const specs = [{ label: "Артикул", value: sku }];
+  const seen = new Set(["Артикул"]);
+
+  for (const [pattern, label, format] of SPEC_PATTERNS) {
+    if (seen.has(label) || specs.length >= 4) continue;
+    const match = pattern.exec(sourceName);
+    if (match) {
+      specs.push({ label, value: format(match) });
+      seen.add(label);
+    }
+  }
+
+  if (specs.length < 4 && serviceLifeDays) {
+    specs.push({ label: "Нормативный срок службы", value: `${serviceLifeDays} дн.` });
+  }
+  if (specs.length < 4 && WARRANTY_KINDS.has(kindName)) {
+    specs.push({ label: "Гарантия", value: "12 мес." });
+  }
+  if (specs.length < 4) {
+    specs.push({ label: "Единица измерения", value: unit });
+  }
+  return specs;
+}
+
 /* ————————————————————— Внешние источники ————————————————————— */
 
 /**
@@ -249,6 +340,14 @@ const WAREHOUSES = [
   ["wh-zhz", "reg-zhz"],
   ["wh-chu", "reg-chu"],
 ];
+
+/** Названия РЕСХ — для описания позиции. */
+const WAREHOUSE_NAMES = {
+  "wh-krg": "РЕСХ Караганда",
+  "wh-blh": "РЕСХ Балхаш",
+  "wh-zhz": "РЕСХ Жезказган",
+  "wh-chu": "РЕСХ Шатыркуль",
+};
 
 /** Дешёвое лежит сотнями, дорогое — единицами. */
 function stockBandOf(price) {
@@ -354,15 +453,18 @@ for (const root of selection.roots) {
         const price = priceOf(kind.name, item.sourceName);
         const serviceLifeDays = serviceLifeOf(kind.name, item.sourceName);
         const stock = stockOf(id, price);
+        const sku = `KM-${rootSlug.slice(0, 3).toUpperCase()}-${String(
+          pick(`sku:${id}`, 1000, 9999)
+        )}`;
+        const warehouseName =
+          WAREHOUSE_NAMES[stock[0].warehouseId] ?? "РЕСХ региона";
 
         products.push({
           id,
           name: humanizeName(item.sourceName),
           // Артикул и код номенклатуры сгенерированы: коды источника
           // (внутренние данные) в прототип не переносятся.
-          sku: `KM-${rootSlug.slice(0, 3).toUpperCase()}-${String(
-            pick(`sku:${id}`, 1000, 9999)
-          )}`,
+          sku,
           erpItemId: `NOM-${pick(`erp:${id}`, 500000, 599999)}`,
           categoryId: kindId,
           unit: unitOf(kind.name, item.sourceName),
@@ -374,6 +476,14 @@ for (const root of selection.roots) {
           ...(serviceLifeDays ? { serviceLifeDays } : {}),
           ...(IMAGES[id] ? { imageUrl: IMAGES[id] } : {}),
           ...(externalSourceOf(id) ? { externalSource: externalSourceOf(id) } : {}),
+          description: descriptionOf(root.name, kind.name, warehouseName),
+          specs: specsOf({
+            sourceName: item.sourceName,
+            kindName: kind.name,
+            sku,
+            unit: unitOf(kind.name, item.sourceName),
+            serviceLifeDays,
+          }),
         });
       }
     }
@@ -528,6 +638,8 @@ interface ProductRow {
   serviceLifeDays?: number;
   imageUrl?: string;
   externalSource?: string;
+  description?: string;
+  specs?: Array<{ label: string; value: string }>;
 }
 
 const PRODUCT_ROWS: ProductRow[] = ${ts(products)};

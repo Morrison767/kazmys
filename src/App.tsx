@@ -11,6 +11,7 @@ import CatalogPage from "@/pages/CatalogPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import OrderDetailPage from "@/pages/OrderDetailPage";
 import OrdersPage from "@/pages/OrdersPage";
+import ProductDetailPage from "@/pages/ProductDetailPage";
 import { useSessionStore } from "@/store";
 
 /**
@@ -60,6 +61,14 @@ export default function App() {
           element={
             <RoleRoute>
               <CatalogPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/catalog/:id"
+          element={
+            <RoleRoute>
+              <ProductDetailPage />
             </RoleRoute>
           }
         />
