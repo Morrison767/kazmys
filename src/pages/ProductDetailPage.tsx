@@ -20,6 +20,7 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { useCustomerScope } from "@/hooks/useCustomerScope";
+import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatDate, formatMoney } from "@/lib/utils";
 import { categoryPath, rootCategoryId } from "@/mocks";
 import { useCartStore, useCatalogStore, useLimitsStore } from "@/store";
@@ -189,27 +190,52 @@ export default function ProductDetailPage() {
           )}
 
           {/* Остатки по РЕСХ */}
-          <Card className="flex flex-col gap-4">
-            <CardHeader
-              title="Остатки на РЕСХ"
-              description="Свободный остаток по региональным складам хранения; в проде обновляется из D365 F&O каждые 15 минут."
-            />
-            <DefinitionList
-              rows={product.stock.map((stock) => ({
-                label: (
-                  <span className="flex items-center gap-1.5">
-                    {warehouseName(stock.warehouseId)}
-                    {stock.warehouseId === warehouse?.id && (
-                      <Badge tone="primary">ваш РЕСХ</Badge>
-                    )}
-                  </span>
-                ),
-                value: `${stock.quantity} ${product.unit} · ${regionName(
-                  stock.regionId
-                )}`,
-              }))}
-            />
-          </Card>
+          {/*
+            У позиций из внешнего маркетплейса нет складского потока через РЕСХ,
+            поэтому показывается доступность у поставщика без склада и региона.
+          */}
+          {product.externalSource ? (
+            <Card className="flex flex-col gap-4">
+              <CardHeader
+                title="Доступность у поставщика"
+                description={`Позиция из каталога ${product.externalSource} — поставляется напрямую, минуя РЕСХ. Число используется для проверки нормы по количеству при оформлении.`}
+              />
+              <DefinitionList
+                rows={[
+                  {
+                    label: "Источник",
+                    value: product.externalSource,
+                  },
+                  {
+                    label: "Доступно у поставщика",
+                    value: `${available} ${product.unit}`,
+                  },
+                ]}
+              />
+            </Card>
+          ) : (
+            <Card className="flex flex-col gap-4">
+              <CardHeader
+                title="Остатки на РЕСХ"
+                description="Свободный остаток по региональным складам хранения; в проде обновляется из D365 F&O каждые 15 минут."
+              />
+              <DefinitionList
+                rows={product.stock.map((stock) => ({
+                  label: (
+                    <span className="flex items-center gap-1.5">
+                      {warehouseName(stock.warehouseId)}
+                      {stock.warehouseId === warehouse?.id && (
+                        <Badge tone="primary">ваш РЕСХ</Badge>
+                      )}
+                    </span>
+                  ),
+                  value: `${stock.quantity} ${product.unit} · ${regionName(
+                    stock.regionId
+                  )}`,
+                }))}
+              />
+            </Card>
+          )}
         </div>
 
         {/* Заказ и поставщик */}
@@ -217,18 +243,20 @@ export default function ProductDetailPage() {
           <Card className="flex flex-col gap-4">
             <CardHeader
               title="Заказать"
-              description={`Доставка на ${warehouse?.name ?? "РЕСХ региона"}`}
+              description={
+                product.externalSource
+                  ? `Поставка от ${product.externalSource} напрямую`
+                  : `Доставка на ${warehouse?.name ?? "РЕСХ региона"}`
+              }
             />
 
-            {isOutOfStock ? (
-              <Badge tone="danger" dot>
-                Нет на {warehouse?.name ?? "РЕСХ"} — поставка под заказ
-              </Badge>
-            ) : (
-              <Badge tone={available < 20 ? "warning" : "success"} dot>
-                {available} {product.unit} на {warehouse?.name ?? "РЕСХ"}
-              </Badge>
-            )}
+            <Badge
+              tone={isOutOfStock ? "danger" : available < 20 ? "warning" : "success"}
+              dot
+            >
+              {stockLabel(product, available, warehouse?.name ?? null)}
+              {isOutOfStock ? " — поставка под заказ" : ""}
+            </Badge>
 
             <div className="flex flex-col gap-2">
               <QuantityStepper

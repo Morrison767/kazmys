@@ -246,11 +246,15 @@ const DESCRIPTION_BY_ROOT = {
     `Электротехническое изделие из группы «${kind}» — для систем питания и автоматизации оборудования.`,
 };
 
-function descriptionOf(rootName, kindName, warehouseName) {
+function descriptionOf(rootName, kindName, warehouseName, externalSource) {
   const first =
     DESCRIPTION_BY_ROOT[rootName]?.(kindName) ??
     `Позиция раздела «${rootName}» из группы «${kindName}».`;
-  return `${first} Поставка на ${warehouseName} по рамочному договору категории.`;
+  // Позиции внешнего маркетплейса идут мимо РЕСХ — в описании его не упоминаем.
+  const second = externalSource
+    ? `Позиция из каталога ${externalSource} — поставляется напрямую, минуя РЕСХ.`
+    : `Поставка на ${warehouseName} по рамочному договору категории.`;
+  return `${first} ${second}`;
 }
 
 /**
@@ -458,6 +462,7 @@ for (const root of selection.roots) {
         )}`;
         const warehouseName =
           WAREHOUSE_NAMES[stock[0].warehouseId] ?? "РЕСХ региона";
+        const externalSource = externalSourceOf(id);
 
         products.push({
           id,
@@ -475,8 +480,13 @@ for (const root of selection.roots) {
           primaryRegionId: stock[0].regionId,
           ...(serviceLifeDays ? { serviceLifeDays } : {}),
           ...(IMAGES[id] ? { imageUrl: IMAGES[id] } : {}),
-          ...(externalSourceOf(id) ? { externalSource: externalSourceOf(id) } : {}),
-          description: descriptionOf(root.name, kind.name, warehouseName),
+          ...(externalSource ? { externalSource } : {}),
+          description: descriptionOf(
+            root.name,
+            kind.name,
+            warehouseName,
+            externalSource
+          ),
           specs: specsOf({
             sourceName: item.sourceName,
             kindName: kind.name,

@@ -4,6 +4,7 @@ import { Check, Package, ShoppingCart } from "lucide-react";
 
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { Badge, Button, Card } from "@/components/ui";
+import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatMoney } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -133,15 +134,16 @@ export function ProductCard({
 
       <div className="mt-auto flex min-w-0 flex-col gap-3 px-3 pb-3 sm:px-4 sm:pb-4">
         <div className="flex flex-wrap items-center gap-2">
-          {isOutOfStock ? (
-            <Badge tone="danger" dot>
-              Нет на {warehouseName ?? "РЕСХ"}
-            </Badge>
-          ) : (
-            <Badge tone={available < 20 ? "warning" : "success"} dot>
-              {available} {product.unit} на {warehouseName ?? "РЕСХ"}
-            </Badge>
-          )}
+          {/*
+            Для позиций из внешнего маркетплейса подпись без РЕСХ: они идут
+            мимо складского потока поставщика категории (см. lib/stock-label).
+          */}
+          <Badge
+            tone={isOutOfStock ? "danger" : available < 20 ? "warning" : "success"}
+            dot
+          >
+            {stockLabel(product, available, warehouseName)}
+          </Badge>
           {product.serviceLifeDays !== undefined && (
             <Badge tone="neutral" outline>
               срок службы {product.serviceLifeDays} дн.
