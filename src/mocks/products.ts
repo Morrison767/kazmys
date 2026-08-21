@@ -1,58 +1,3805 @@
+import type { Product, StockBalance } from "@/types";
+
 import { rootCategoryId } from "@/mocks/categories";
 import { supplierOfCategory } from "@/mocks/suppliers";
-import { WAREHOUSES } from "@/mocks/regions";
-import type { Product, StockBalance, UnitOfMeasure } from "@/types";
 
 /**
- * Номенклатура каталога. Формируется из ассортимента поставщика категории
- * («один поставщик на категорию»), поэтому supplierId не задаётся вручную,
- * а выводится от категории закупа — так данные не могут разойтись с моделью.
+ * Номенклатура каталога. Названия и привязка к видам категорий — реальные
+ * (источник: SMAT, номенклатура склада Казахмыса). Артикулы, коды
+ * номенклатуры, цены, единицы измерения, остатки на РЕСХ и нормативные сроки
+ * службы сгенерированы для прототипа: в источнике этих данных нет.
  *
- * Цены — по рамочному договору, в тенге без НДС (ставка 12%).
- * Остатки — свободный остаток на РЕСХ; в проде обновляются из D365 F&O
- * по OData каждые 15 минут.
+ * Поставщик не задаётся вручную, а выводится от категории закупа —
+ * модель «один поставщик на категорию» не может разойтись с данными.
  *
- * serviceLifeDays (нормативный срок службы) заполнен для инструмента —
- * на нём строится аналитика ходимости (см. tool-usage-history.ts).
+ * ФАЙЛ СГЕНЕРИРОВАН: scripts/generate-catalog.mjs из data/smat-selection.json.
  */
 
 /** Момент последней синхронизации остатков с D365 F&O. */
 const STOCK_SYNCED_AT = "2026-08-20T04:15:00.000Z";
-
-const WAREHOUSE_REGION: Record<string, string> = WAREHOUSES.reduce(
-  (acc, w) => ({ ...acc, [w.id]: w.regionId }),
-  {} as Record<string, string>
-);
-
-/** [склад, свободный остаток, резерв под согласованные заказы]. */
-type StockRow = [warehouseId: string, quantity: number, reserved?: number];
 
 interface ProductRow {
   id: string;
   name: string;
   sku: string;
   erpItemId: string;
-  /** Подгруппа каталога; категория закупа выводится через rootCategoryId. */
   categoryId: string;
-  unit: UnitOfMeasure;
+  unit: Product["unit"];
   price: number;
-  stock: StockRow[];
+  vatRate: number;
+  stock: Array<{ warehouseId: string; regionId: string; quantity: number }>;
+  primaryWarehouseId: string;
+  primaryRegionId: string;
   serviceLifeDays?: number;
-  description?: string;
-  isArchived?: boolean;
+  imageUrl?: string;
 }
 
-function toStock(rows: StockRow[]): StockBalance[] {
-  return rows.map(([warehouseId, quantity, reserved]) => ({
-    warehouseId,
-    regionId: WAREHOUSE_REGION[warehouseId],
-    quantity,
-    ...(reserved === undefined ? {} : { reserved }),
-    updatedAt: STOCK_SYNCED_AT,
-  }));
+const PRODUCT_ROWS: ProductRow[] = [
+  {
+    id: "prd-hozyaystvennye-ofisnye-001",
+    name: "Бланк график работы ЭПУ формат А3 Ч/Б плотн БУМ80Г/М2 одност",
+    sku: "KM-HOZ-8597",
+    erpItemId: "NOM-539403",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-blanki",
+    unit: "упак",
+    price: 2950,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 370
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 290
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-002",
+    name: "Талон медицинского освидетел ЦВ, 40Х55ММ КЗ 540Х280 ЧБ/ЦВ",
+    sku: "KM-HOZ-6978",
+    erpItemId: "NOM-517022",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-blanki",
+    unit: "упак",
+    price: 3300,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 410
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-003",
+    name: "Бланк извещение А4/1 книж 80Г/М2 цветной",
+    sku: "KM-HOZ-5359",
+    erpItemId: "NOM-594641",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-blanki",
+    unit: "упак",
+    price: 3700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 420
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 40
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 240
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-004",
+    name: "Папка биговка А4",
+    sku: "KM-HOZ-3740",
+    erpItemId: "NOM-572260",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-papki",
+    unit: "шт",
+    price: 440,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 2800
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 3250
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-005",
+    name: "Папка-уголок А4 прозрачная бесцветная",
+    sku: "KM-HOZ-2121",
+    erpItemId: "NOM-549879",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-papki",
+    unit: "шт",
+    price: 1210,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 380
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    imageUrl: "/products/papka.jpg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-006",
+    name: "Папка на резинках А4",
+    sku: "KM-HOZ-9502",
+    erpItemId: "NOM-527498",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-papki",
+    unit: "шт",
+    price: 1190,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 170
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 530
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 580
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-007",
+    name: "Ручка MAXRITER красная 1ШТ",
+    sku: "KM-HOZ-7883",
+    erpItemId: "NOM-505117",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-ruchki",
+    unit: "шт",
+    price: 310,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 550
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 350
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-008",
+    name: "Карандаш с ластиком",
+    sku: "KM-HOZ-6264",
+    erpItemId: "NOM-540832",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-ruchki",
+    unit: "шт",
+    price: 155,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 600
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-009",
+    name: "Мел 10-12СМ",
+    sku: "KM-HOZ-4645",
+    erpItemId: "NOM-518451",
+    categoryId: "cat-hozyaystvennye-ofisnye-kancelyarskie-tovary-ruchki",
+    unit: "шт",
+    price: 135,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1100
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 2500
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 2250
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-010",
+    name: "Тарелка десертная 6ШТ фарфор",
+    sku: "KM-HOZ-6407",
+    erpItemId: "NOM-557471",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-tarelki",
+    unit: "шт",
+    price: 1100,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 360
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 50
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-011",
+    name: "Тарелка для супа 15СМ",
+    sku: "KM-HOZ-8026",
+    erpItemId: "NOM-535090",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-tarelki",
+    unit: "шт",
+    price: 3300,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 410
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 510
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 130
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-012",
+    name: "Тарелка глубокая 20СМ",
+    sku: "KM-HOZ-9645",
+    erpItemId: "NOM-512709",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-tarelki",
+    unit: "шт",
+    price: 1900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 280
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-013",
+    name: "Набор столовых вилок 12ШТ",
+    sku: "KM-HOZ-2264",
+    erpItemId: "NOM-590328",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-stolovye",
+    unit: "набор",
+    price: 1750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 600
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 340
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-014",
+    name: "Вилка столовая металлическая L 200-65 B 2MM",
+    sku: "KM-HOZ-8931",
+    erpItemId: "NOM-546995",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-stolovye",
+    unit: "шт",
+    price: 2450,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 350
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-015",
+    name: "Ложка столовая металл L200-66 B2MM",
+    sku: "KM-HOZ-1550",
+    erpItemId: "NOM-524614",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-stolovye",
+    unit: "шт",
+    price: 3950,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 560
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 310
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-016",
+    name: "Сковорода D28СМ алюминий",
+    sku: "KM-HOZ-3169",
+    erpItemId: "NOM-502233",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-kuhonnyy",
+    unit: "шт",
+    price: 8300,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 410
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 540
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 340
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-017",
+    name: "Ножницы кухонные К012 нерж.сталь",
+    sku: "KM-HOZ-4788",
+    erpItemId: "NOM-579852",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-kuhonnyy",
+    unit: "шт",
+    price: 6000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 330
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-018",
+    name: "Миска 5Л эмалированная",
+    sku: "KM-HOZ-2455",
+    erpItemId: "NOM-578423",
+    categoryId: "cat-hozyaystvennye-ofisnye-posuda-i-kuhonnyy",
+    unit: "шт",
+    price: 9200,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 520
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 290
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 460
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-019",
+    name: "Тонер-картридж CANON IR2016/2020/2022/2025/2030/2318",
+    sku: "KM-HOZ-4074",
+    erpItemId: "NOM-556042",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-kartridzhi",
+    unit: "шт",
+    price: 32500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    imageUrl: "/products/kartridzh.jpg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-020",
+    name: "Принтер лазерный цветной 41СТ/МИН/1.5GB/1.2GHZ/556X589X399MM",
+    sku: "KM-HOZ-2598",
+    erpItemId: "NOM-544662",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-printery",
+    unit: "шт",
+    price: 915000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 2
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-021",
+    name: "Принтер А3 цветной Ч/Б/600Х600/20СТР/МИН/192МБ",
+    sku: "KM-HOZ-9979",
+    erpItemId: "NOM-567043",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-printery",
+    unit: "шт",
+    price: 261000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 11
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-022",
+    name: "Принтер А4 цветной 128МБ USB 2.0/RJ-45/750 мгц",
+    sku: "KM-HOZ-5836",
+    erpItemId: "NOM-599900",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-printery",
+    unit: "шт",
+    price: 292000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 12
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 10
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-023",
+    name: "Машина стиральная 9КГ 1400ОБ/МИН",
+    sku: "KM-HOZ-4217",
+    erpItemId: "NOM-522281",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-stiralnye",
+    unit: "шт",
+    price: 462000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 9
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 1
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 11
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-024",
+    name: "Машина стиральная 7КГ 1200ОБ/МИН автомат",
+    sku: "KM-HOZ-9074",
+    erpItemId: "NOM-555138",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-stiralnye",
+    unit: "шт",
+    price: 251000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 8
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 10
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 6
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-hozyaystvennye-ofisnye-025",
+    name: "Машина стиральная 9КГ 1400ОБ/МИН А+++ автомат",
+    sku: "KM-HOZ-7455",
+    erpItemId: "NOM-577519",
+    categoryId: "cat-hozyaystvennye-ofisnye-ofisnoe-oborudovanie-stiralnye",
+    unit: "шт",
+    price: 466000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 5
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-001",
+    name: "Костюм ИТР утепл. Х/Б ткань Р.88-92/158-164",
+    sku: "KM-SPE-1735",
+    erpItemId: "NOM-520503",
+    categoryId: "cat-specodezhda-i-kostyumy-i-uteplennye",
+    unit: "компл",
+    price: 52500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 48
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 70
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-002",
+    name: "Костюм ИТР утепл. Х/Б ткань Р.88-92/170-176",
+    sku: "KM-SPE-6592",
+    erpItemId: "NOM-553360",
+    categoryId: "cat-specodezhda-i-kostyumy-i-uteplennye",
+    unit: "компл",
+    price: 46000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 42
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 26
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-003",
+    name: "Костюм ИТР утепл. Х/Б ткань Р.96-100/158-164",
+    sku: "KM-SPE-4973",
+    erpItemId: "NOM-575741",
+    categoryId: "cat-specodezhda-i-kostyumy-i-uteplennye",
+    unit: "компл",
+    price: 31000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 44
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 62
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 34
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-004",
+    name: "Костюм рабочий утепл. от электр.дуги 65 КАЛ 136-140/170-176",
+    sku: "KM-SPE-5878",
+    erpItemId: "NOM-587646",
+    categoryId: "cat-specodezhda-i-kostyumy-i-zaschitnye",
+    unit: "компл",
+    price: 309000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 12
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 10
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-specodezhda-i-005",
+    name: "Костюм рабочий от электр.дуги 12 КАЛ/СМ2 136-140/170-176",
+    sku: "KM-SPE-4259",
+    erpItemId: "NOM-510027",
+    categoryId: "cat-specodezhda-i-kostyumy-i-zaschitnye",
+    unit: "компл",
+    price: 177000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 1
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 3
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-006",
+    name: "Костюм рабочий от электр.дуги 20КАЛ Р.88-92/170-176",
+    sku: "KM-SPE-9116",
+    erpItemId: "NOM-542884",
+    categoryId: "cat-specodezhda-i-kostyumy-i-zaschitnye",
+    unit: "компл",
+    price: 304000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 10
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 2
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 12
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-007",
+    name: "Костюм ИТР Х/Б ткань Р.96-100/182-188",
+    sku: "KM-SPE-7497",
+    erpItemId: "NOM-565265",
+    categoryId: "cat-specodezhda-i-kostyumy-i-letnie",
+    unit: "компл",
+    price: 39500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 12
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-008",
+    name: "Костюм ИТР Х/Б ткань Р.104-108/170-176",
+    sku: "KM-SPE-7306",
+    erpItemId: "NOM-577170",
+    categoryId: "cat-specodezhda-i-kostyumy-i-letnie",
+    unit: "компл",
+    price: 21000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 62
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 84
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-specodezhda-i-009",
+    name: "Костюм ИТР Х/Б ткань Р.104-108/182-188",
+    sku: "KM-SPE-5687",
+    erpItemId: "NOM-599551",
+    categoryId: "cat-specodezhda-i-kostyumy-i-letnie",
+    unit: "компл",
+    price: 42000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 36
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 34
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 78
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-010",
+    name: "Галоши диэлектр Р.30 высота 10-15СМ ГОСТ 13385-78",
+    sku: "KM-SPE-2687",
+    erpItemId: "NOM-585313",
+    categoryId: "cat-specodezhda-i-specobuv-zaschitnaya",
+    unit: "пара",
+    price: 39500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 38
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 44
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-011",
+    name: "Ботинки кож. лет. с метал.подноском Р.38",
+    sku: "KM-SPE-1068",
+    erpItemId: "NOM-562932",
+    categoryId: "cat-specodezhda-i-specobuv-zaschitnaya",
+    unit: "пара",
+    price: 41500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 40
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    imageUrl: "/products/botinki.jpg"
+  },
+  {
+    id: "prd-specodezhda-i-012",
+    name: "Ботинки кож. утепл. с метал.подноском Р.39",
+    sku: "KM-SPE-5925",
+    erpItemId: "NOM-530075",
+    categoryId: "cat-specodezhda-i-specobuv-zaschitnaya",
+    unit: "пара",
+    price: 45500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 20
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-013",
+    name: "Сапоги болотные Р.41 ГОСТ 12.4.072-79, ГОСТ 5375-79",
+    sku: "KM-SPE-4306",
+    erpItemId: "NOM-507694",
+    categoryId: "cat-specodezhda-i-specobuv-rezinovye",
+    unit: "пара",
+    price: 12000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 34
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 58
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 46
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    imageUrl: "/products/sapogi.jpg"
+  },
+  {
+    id: "prd-specodezhda-i-014",
+    name: "Сапоги болотные Р.44 ГОСТ 12.4.072-79, ГОСТ 5375-79",
+    sku: "KM-SPE-5211",
+    erpItemId: "NOM-595789",
+    categoryId: "cat-specodezhda-i-specobuv-rezinovye",
+    unit: "пара",
+    price: 9000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 380
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-015",
+    name: "Сапоги болотные Р.42 ГОСТ 12.4.072-79, ГОСТ 5375-79",
+    sku: "KM-SPE-3592",
+    erpItemId: "NOM-573408",
+    categoryId: "cat-specodezhda-i-specobuv-rezinovye",
+    unit: "пара",
+    price: 13000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 62
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 90
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 42
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-016",
+    name: "Сланцы Р.37",
+    sku: "KM-SPE-8449",
+    erpItemId: "NOM-540551",
+    categoryId: "cat-specodezhda-i-specobuv-slipony",
+    unit: "пара",
+    price: 5200,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 440
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 460
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 470
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-017",
+    name: "Сланцы Р.38",
+    sku: "KM-SPE-6830",
+    erpItemId: "NOM-518170",
+    categoryId: "cat-specodezhda-i-specobuv-slipony",
+    unit: "пара",
+    price: 6900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 240
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 510
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-specodezhda-i-018",
+    name: "Сланцы Р.39",
+    sku: "KM-SPE-7735",
+    erpItemId: "NOM-564361",
+    categoryId: "cat-specodezhda-i-specobuv-slipony",
+    unit: "пара",
+    price: 5000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 530
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 290
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 50
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-019",
+    name: "Жилет утепл. Р.88-92/158-164 ГОСТ 25295-2003",
+    sku: "KM-SPE-6116",
+    erpItemId: "NOM-541980",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-uteplennye",
+    unit: "шт",
+    price: 15500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 86
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-020",
+    name: "Жилет утепл. Р.88-92/170-176",
+    sku: "KM-SPE-1972",
+    erpItemId: "NOM-592132",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-uteplennye",
+    unit: "шт",
+    price: 16500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 14
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 68
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 16
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-specodezhda-i-021",
+    name: "Жилет утепл. Р.96-100/170-176 ГОСТ 25295-2003",
+    sku: "KM-SPE-9353",
+    erpItemId: "NOM-569751",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-uteplennye",
+    unit: "шт",
+    price: 12000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 58
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 50
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-022",
+    name: "Белье нательное ХБ (ДЛЯ ДУГОСТОЙ.КОСТЮМОВ), 136-140/170-176",
+    sku: "KM-SPE-7734",
+    erpItemId: "NOM-547370",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-natelnoe",
+    unit: "компл",
+    price: 18500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 26
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-023",
+    name: "Белье нательное Х/Б ткань Р.88-92/182-188",
+    sku: "KM-SPE-6115",
+    erpItemId: "NOM-524989",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-natelnoe",
+    unit: "шт",
+    price: 8750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 510
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 600
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 240
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-specodezhda-i-024",
+    name: "Белье нательное Х/Б ткань Р.88-92/194-200",
+    sku: "KM-SPE-8448",
+    erpItemId: "NOM-581656",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-natelnoe",
+    unit: "шт",
+    price: 12000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 12
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-specodezhda-i-025",
+    name: "Халат махровый, XL BAG-2472/001-006",
+    sku: "KM-SPE-6829",
+    erpItemId: "NOM-559275",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-rabochie",
+    unit: "шт",
+    price: 20750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 76
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 24
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 66
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-specodezhda-i-026",
+    name: "Халат медицинский смес.ткань Р.88-92/170-176",
+    sku: "KM-SPE-5210",
+    erpItemId: "NOM-536894",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-rabochie",
+    unit: "шт",
+    price: 14750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 84
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 24
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-specodezhda-i-027",
+    name: "Халат рабочий смес.ткань Р.88-92/158-164 12.4.131-83",
+    sku: "KM-SPE-3591",
+    erpItemId: "NOM-514513",
+    categoryId: "cat-specodezhda-i-rabochaya-odezhda-rabochie",
+    unit: "шт",
+    price: 12250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 12
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-instrumenty-i-001",
+    name: "Манометр МП2-УФ 0-1МПА-КЛТ2,5-D50-IP40-М12Х1,5-РШ-У2 РРК",
+    sku: "KM-INS-2429",
+    erpItemId: "NOM-558339",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-manometry",
+    unit: "шт",
+    price: 55500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 22
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-instrumenty-i-002",
+    name: "Манометр МП4-УУ2-250КГС/СМ2-1,5-IP53-ЦСМ",
+    sku: "KM-INS-9810",
+    erpItemId: "NOM-535958",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-manometry",
+    unit: "шт",
+    price: 89000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 18
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 58
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-instrumenty-i-003",
+    name: "Манометр МП3-УФ 0-6КГС/СМ2 КЛ.Т.1,5 ОШ",
+    sku: "KM-INS-8191",
+    erpItemId: "NOM-513577",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-manometry",
+    unit: "шт",
+    price: 22000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 66
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 56
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 90
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    imageUrl: "/products/manometr.jpg"
+  },
+  {
+    id: "prd-instrumenty-i-004",
+    name: "Установка автомат для поверки эл.счетчиков нева-тест 6303",
+    sku: "KM-INS-6572",
+    erpItemId: "NOM-591196",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-pribory",
+    unit: "шт",
+    price: 265000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 4
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-instrumenty-i-005",
+    name: "Платформа компактная EXFO FTB-2 PRO",
+    sku: "KM-INS-4953",
+    erpItemId: "NOM-568815",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-pribory",
+    unit: "шт",
+    price: 1358000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 9
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 7
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-instrumenty-i-006",
+    name: "Мегаомметр ЭС-0202/2-Г",
+    sku: "KM-INS-3334",
+    erpItemId: "NOM-546434",
+    categoryId: "cat-instrumenty-i-kontrolno-izmeritelnye-pribory",
+    unit: "шт",
+    price: 406000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 12
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 8
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 6
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-instrumenty-i-007",
+    name: "Сверло сборное 42ММ K3D42040-13",
+    sku: "KM-INS-1715",
+    erpItemId: "NOM-524053",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-sverla",
+    unit: "шт",
+    price: 15500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 72
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 40,
+    imageUrl: "/products/sverlo.jpg"
+  },
+  {
+    id: "prd-instrumenty-i-008",
+    name: "Сверло сборное K5D18025-06",
+    sku: "KM-INS-8000",
+    erpItemId: "NOM-501672",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-sverla",
+    unit: "шт",
+    price: 21500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 80
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 75
+  },
+  {
+    id: "prd-instrumenty-i-009",
+    name: "Сверло сборное K5D19025-06",
+    sku: "KM-INS-6381",
+    erpItemId: "NOM-579291",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-sverla",
+    unit: "шт",
+    price: 33000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 58
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 65
+  },
+  {
+    id: "prd-instrumenty-i-010",
+    name: "Фреза торцевая EMP02-040-A16-AP16-04C D40ММ",
+    sku: "KM-INS-1993",
+    erpItemId: "NOM-593529",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-frezy",
+    unit: "шт",
+    price: 135500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 100
+  },
+  {
+    id: "prd-instrumenty-i-011",
+    name: "Фреза торцевая EMP02-080-A27-AP16-07C D80ММ",
+    sku: "KM-INS-9374",
+    erpItemId: "NOM-515910",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-frezy",
+    unit: "шт",
+    price: 92000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 84
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 66
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 8
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 120
+  },
+  {
+    id: "prd-instrumenty-i-012",
+    name: "Фреза концевая D25ММ EPAV12M025C25.0R03L",
+    sku: "KM-INS-7755",
+    erpItemId: "NOM-538291",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-frezy",
+    unit: "шт",
+    price: 113500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 11
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 100
+  },
+  {
+    id: "prd-instrumenty-i-013",
+    name: "Метчик М22Х1,5 машинно-ручной",
+    sku: "KM-INS-6136",
+    erpItemId: "NOM-560672",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-metchiki",
+    unit: "шт",
+    price: 2600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 360
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-instrumenty-i-014",
+    name: "Метчик М14Х2 гаечный",
+    sku: "KM-INS-8469",
+    erpItemId: "NOM-504005",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-metchiki",
+    unit: "шт",
+    price: 9400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 500
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 370
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 50
+  },
+  {
+    id: "prd-instrumenty-i-015",
+    name: "Метчик М14Х1,5 машинно-ручной ГОСТ 3266-81",
+    sku: "KM-INS-6850",
+    erpItemId: "NOM-526386",
+    categoryId: "cat-instrumenty-i-metallorezhuschiy-inst-metchiki",
+    unit: "шт",
+    price: 7600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 490
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 90
+  },
+  {
+    id: "prd-instrumenty-i-016",
+    name: "Трещотка 3/4\" 520-800ММ раздвижная",
+    sku: "KM-INS-5231",
+    erpItemId: "NOM-548767",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-gaechnye",
+    unit: "шт",
+    price: 28750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 22
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 46
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 410,
+    imageUrl: "/products/trehcotka.jpg"
+  },
+  {
+    id: "prd-instrumenty-i-017",
+    name: "Набор головок ударных 1/2 17ПРЕДМ №5039920",
+    sku: "KM-INS-3612",
+    erpItemId: "NOM-571148",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-gaechnye",
+    unit: "набор",
+    price: 29750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 32
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 30
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 195
+  },
+  {
+    id: "prd-instrumenty-i-018",
+    name: "Ключ головка 36ММх200ММ",
+    sku: "KM-INS-7041",
+    erpItemId: "NOM-514481",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-gaechnye",
+    unit: "шт",
+    price: 9250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 400
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 150
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 520
+  },
+  {
+    id: "prd-instrumenty-i-019",
+    name: "Отвертка Т09 звездочка",
+    sku: "KM-INS-5422",
+    erpItemId: "NOM-536862",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-otvertki",
+    unit: "шт",
+    price: 23700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 18
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 185
+  },
+  {
+    id: "prd-instrumenty-i-020",
+    name: "Набор отверток 6ШТ диэлектрических 1097006",
+    sku: "KM-INS-5802",
+    erpItemId: "NOM-506338",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-otvertki",
+    unit: "набор",
+    price: 7700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 430
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 480
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 150
+  },
+  {
+    id: "prd-instrumenty-i-021",
+    name: "Набор отверток 7ПРЕДМЕТ диэлектрических 288400700",
+    sku: "KM-INS-7421",
+    erpItemId: "NOM-583957",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-otvertki",
+    unit: "набор",
+    price: 9600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 600
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 430
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 590
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 210
+  },
+  {
+    id: "prd-instrumenty-i-022",
+    name: "Черенок напильника",
+    sku: "KM-INS-2564",
+    erpItemId: "NOM-551100",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-napilniki",
+    unit: "шт",
+    price: 5900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 580
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 270
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 240
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 100
+  },
+  {
+    id: "prd-instrumenty-i-023",
+    name: "Надфиль трехграннный односторон.",
+    sku: "KM-INS-4183",
+    erpItemId: "NOM-528719",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-napilniki",
+    unit: "шт",
+    price: 9400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 190
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 105
+  },
+  {
+    id: "prd-instrumenty-i-024",
+    name: "Напильник плоский 150ММ №1 тупоносый 2820-0011 ГОСТ 1465-80",
+    sku: "KM-INS-8326",
+    erpItemId: "NOM-595862",
+    categoryId: "cat-instrumenty-i-ruchnoy-instrument-napilniki",
+    unit: "шт",
+    price: 8600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 380
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 65,
+    imageUrl: "/products/napilnik.png"
+  },
+  {
+    id: "prd-rashodnye-materialy-001",
+    name: "Пластина твердосплавная 13632 Т5К10",
+    sku: "KM-RAS-3583",
+    erpItemId: "NOM-520961",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-tverdosplavnye",
+    unit: "упак",
+    price: 75500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 86
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 22
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 25
+  },
+  {
+    id: "prd-rashodnye-materialy-002",
+    name: "Пластина твердосплавная 67420 ВК6ОМ",
+    sku: "KM-RAS-5202",
+    erpItemId: "NOM-543342",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-tverdosplavnye",
+    unit: "упак",
+    price: 23000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 54
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 60
+  },
+  {
+    id: "prd-rashodnye-materialy-003",
+    name: "Пластина сменная многогранная HFPR6030 IC808",
+    sku: "KM-RAS-6821",
+    erpItemId: "NOM-565723",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-tverdosplavnye",
+    unit: "упак",
+    price: 57500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 36
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 62
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 50
+  },
+  {
+    id: "prd-rashodnye-materialy-004",
+    name: "Коронка буровая 7581-6051A-F70 D51ММ Α360",
+    sku: "KM-RAS-4488",
+    erpItemId: "NOM-509056",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-burovye",
+    unit: "шт",
+    price: 169500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 8
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 85
+  },
+  {
+    id: "prd-rashodnye-materialy-005",
+    name: "Коронка алмазная 07 кс-то D95,6ММ",
+    sku: "KM-RAS-6107",
+    erpItemId: "NOM-531437",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-burovye",
+    unit: "шт",
+    price: 161500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 5
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 3
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 80
+  },
+  {
+    id: "prd-rashodnye-materialy-006",
+    name: "Коронка 7528-5604-S65/S81 D204ММ ST58 буровая",
+    sku: "KM-RAS-7726",
+    erpItemId: "NOM-553818",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-burovye",
+    unit: "шт",
+    price: 33000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 58
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 10
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 8
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 120
+  },
+  {
+    id: "prd-rashodnye-materialy-007",
+    name: "Цанга 470E-08",
+    sku: "KM-RAS-9345",
+    erpItemId: "NOM-576199",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-cangi",
+    unit: "шт",
+    price: 20000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 6
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 180
+  },
+  {
+    id: "prd-rashodnye-materialy-008",
+    name: "Цанга 470ЕP-16",
+    sku: "KM-RAS-7012",
+    erpItemId: "NOM-577628",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-cangi",
+    unit: "шт",
+    price: 15000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 74
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 34
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 72
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 335
+  },
+  {
+    id: "prd-rashodnye-materialy-009",
+    name: "Цанга 472ЕР-08",
+    sku: "KM-RAS-8631",
+    erpItemId: "NOM-500009",
+    categoryId: "cat-rashodnye-materialy-instrumentalnaya-osnas-cangi",
+    unit: "шт",
+    price: 13750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 34
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 360
+  },
+  {
+    id: "prd-rashodnye-materialy-010",
+    name: "Круг шлифовальный 200X20X32 25А F45 K6 V35М/С 2 кл",
+    sku: "KM-RAS-5773",
+    erpItemId: "NOM-585771",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye",
+    unit: "шт",
+    price: 7050,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 270
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 360
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 480
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 35,
+    imageUrl: "/products/krug-shlif.jpg"
+  },
+  {
+    id: "prd-rashodnye-materialy-011",
+    name: "Круг шлифовальный 100Х20Х20 25А 60К 6 V 50 2",
+    sku: "KM-RAS-4154",
+    erpItemId: "NOM-563390",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye",
+    unit: "шт",
+    price: 6650,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 320
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 250
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 15
+  },
+  {
+    id: "prd-rashodnye-materialy-012",
+    name: "Круг шлифовальный алмаз. 12V9 75X20X20 3-10 DF64-3-PD",
+    sku: "KM-RAS-2535",
+    erpItemId: "NOM-541009",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye",
+    unit: "шт",
+    price: 3150,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 60
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 45
+  },
+  {
+    id: "prd-rashodnye-materialy-013",
+    name: "Шкурка шлиф. на тканевой основе 700ММ Р50 водост.",
+    sku: "KM-RAS-9916",
+    erpItemId: "NOM-518628",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye-2",
+    unit: "рул",
+    price: 3400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 240
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 260
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 460
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 20
+  },
+  {
+    id: "prd-rashodnye-materialy-014",
+    name: "Шкурка шлиф. на тканевой основе №0-6 720ММ 14А",
+    sku: "KM-RAS-8297",
+    erpItemId: "NOM-596247",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye-2",
+    unit: "рул",
+    price: 3600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 40
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 360
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 60
+  },
+  {
+    id: "prd-rashodnye-materialy-015",
+    name: "Шкурка шлиф. на тканевой основе №12-16",
+    sku: "KM-RAS-6678",
+    erpItemId: "NOM-573866",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-shlifovalnye-2",
+    unit: "рул",
+    price: 10800,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 28
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-rashodnye-materialy-016",
+    name: "Жшпт ерши ф 5060 6-10-40-П-20",
+    sku: "KM-RAS-5059",
+    erpItemId: "NOM-551485",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-provolochnye",
+    unit: "шт",
+    price: 1650,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 480
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 590
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 160
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 65
+  },
+  {
+    id: "prd-rashodnye-materialy-017",
+    name: "Ерши ф 6-10-40-П-20",
+    sku: "KM-RAS-3440",
+    erpItemId: "NOM-529104",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-provolochnye",
+    unit: "шт",
+    price: 5450,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 70
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 420
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 50
+  },
+  {
+    id: "prd-rashodnye-materialy-018",
+    name: "Жшпт ерши Ф40 6-10-40-П-20",
+    sku: "KM-RAS-1821",
+    erpItemId: "NOM-564819",
+    categoryId: "cat-rashodnye-materialy-abrazivnye-materialy-provolochnye",
+    unit: "шт",
+    price: 800,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 3600
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 75
+  },
+  {
+    id: "prd-rashodnye-materialy-019",
+    name: "Электрод FOX SAS-2-A-4,0 E347-17",
+    sku: "KM-RAS-9202",
+    erpItemId: "NOM-542438",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-svarochnye",
+    unit: "кг",
+    price: 3850,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 80
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 200
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 160
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 30,
+    imageUrl: "/products/elektrody.jpg"
+  },
+  {
+    id: "prd-rashodnye-materialy-020",
+    name: "Пруток сварочный D2ММ алюминиевый ER 5356 (AlMg5, АМГ5)",
+    sku: "KM-RAS-4290",
+    erpItemId: "NOM-572962",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-svarochnye",
+    unit: "кг",
+    price: 4900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 130
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-rashodnye-materialy-021",
+    name: "Электрод ОЗЛ-8 D4ММ ГОСТ 9466-75, ГОСТ 10052-75",
+    sku: "KM-RAS-2671",
+    erpItemId: "NOM-595343",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-svarochnye",
+    unit: "кг",
+    price: 9100,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 300
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 280
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 320
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-rashodnye-materialy-022",
+    name: "Держатель наконечника М6/М8х25хМ10х1,0",
+    sku: "KM-RAS-7528",
+    erpItemId: "NOM-528200",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-rashodnye",
+    unit: "шт",
+    price: 7250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 180
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 80
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 250
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 70
+  },
+  {
+    id: "prd-rashodnye-materialy-023",
+    name: "Катод G-30 для плазмотрона S45",
+    sku: "KM-RAS-5909",
+    erpItemId: "NOM-550581",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-rashodnye",
+    unit: "шт",
+    price: 23750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 30
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 68
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-rashodnye-materialy-024",
+    name: "Диффузор TBI 7W газовый",
+    sku: "KM-RAS-6814",
+    erpItemId: "NOM-562486",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-rashodnye",
+    unit: "шт",
+    price: 14750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 30
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 62
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 72
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu",
+    serviceLifeDays: 60
+  },
+  {
+    id: "prd-rashodnye-materialy-025",
+    name: "Сопло 130А 220182",
+    sku: "KM-RAS-5195",
+    erpItemId: "NOM-584867",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-sopla",
+    unit: "шт",
+    price: 2200,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 250
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 400
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg",
+    serviceLifeDays: 85
+  },
+  {
+    id: "prd-rashodnye-materialy-026",
+    name: "Сопло 30А 220193",
+    sku: "KM-RAS-1052",
+    erpItemId: "NOM-517724",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-sopla",
+    unit: "шт",
+    price: 3700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 470
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 130
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh",
+    serviceLifeDays: 30
+  },
+  {
+    id: "prd-rashodnye-materialy-027",
+    name: "Кожух сопла 220313",
+    sku: "KM-RAS-8433",
+    erpItemId: "NOM-540105",
+    categoryId: "cat-rashodnye-materialy-rashodnye-materialy-sopla",
+    unit: "шт",
+    price: 6400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 500
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    serviceLifeDays: 40
+  },
+  {
+    id: "prd-metizy-i-001",
+    name: "Болт 7008-9134-01",
+    sku: "KM-MET-7947",
+    erpItemId: "NOM-586125",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-bolty",
+    unit: "шт",
+    price: 485,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1500
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 1500
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    imageUrl: "/products/bolt.jpg"
+  },
+  {
+    id: "prd-metizy-i-002",
+    name: "Винт клина SANDVIK 7008-9134-03",
+    sku: "KM-MET-3804",
+    erpItemId: "NOM-553268",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-bolty",
+    unit: "шт",
+    price: 1250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 220
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 330
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-003",
+    name: "Винт M8Х1,0Х21Х9,68Х7,9Х3ММ VHX0821",
+    sku: "KM-MET-2185",
+    erpItemId: "NOM-530887",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-bolty",
+    unit: "шт",
+    price: 690,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1750
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 700
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1600
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-004",
+    name: "Гайка M16 SANDVIK 7008-9120",
+    sku: "KM-MET-7042",
+    erpItemId: "NOM-598030",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-gayki",
+    unit: "шт",
+    price: 795,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 3050
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 800
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 1050
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-005",
+    name: "Гайка 25 (БЕЗ РЕЗЬБЫ) КЗ-6636.002",
+    sku: "KM-MET-5423",
+    erpItemId: "NOM-575649",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-gayki",
+    unit: "шт",
+    price: 435,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 2250
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-metizy-i-006",
+    name: "Гайка Tr400x12LH Ф-36993",
+    sku: "KM-MET-1280",
+    erpItemId: "NOM-542792",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-gayki",
+    unit: "шт",
+    price: 340,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 1450
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-007",
+    name: "Шайба стопорная М16 SANDVIK 7008-4341-19",
+    sku: "KM-MET-8661",
+    erpItemId: "NOM-520411",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-shayby",
+    unit: "шт",
+    price: 160,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1300
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 500
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-008",
+    name: "Шайба стопорная М16 7008-9135-01",
+    sku: "KM-MET-5614",
+    erpItemId: "NOM-587554",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-shayby",
+    unit: "шт",
+    price: 165,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 3650
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1800
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 2200
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-009",
+    name: "Шайба С10.01.10 ГОСТ 11371-78",
+    sku: "KM-MET-3995",
+    erpItemId: "NOM-565173",
+    categoryId: "cat-metizy-i-izdeliya-rezbovye-shayby",
+    unit: "шт",
+    price: 335,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1300
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-metizy-i-010",
+    name: "Хомут 16ММ длина 420ММ ширина 70ММ",
+    sku: "KM-MET-5757",
+    erpItemId: "NOM-594557",
+    categoryId: "cat-metizy-i-zazhimy-i-homuty",
+    unit: "шт",
+    price: 550,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1100
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 1000
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-011",
+    name: "Жшпт клиня 6-10-40-П-30",
+    sku: "KM-MET-7376",
+    erpItemId: "NOM-572176",
+    categoryId: "cat-metizy-i-zazhimy-i-podderzhivayuschie",
+    unit: "шт",
+    price: 2900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 370
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-012",
+    name: "Клиня 6-10-40-П-30",
+    sku: "KM-MET-2519",
+    erpItemId: "NOM-539319",
+    categoryId: "cat-metizy-i-zazhimy-i-podderzhivayuschie",
+    unit: "шт",
+    price: 9200,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 580
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-metizy-i-013",
+    name: "Зажим канатный (ТРОСОВЫЙ) К-676-У3",
+    sku: "KM-MET-4138",
+    erpItemId: "NOM-516938",
+    categoryId: "cat-metizy-i-zazhimy-i-podderzhivayuschie",
+    unit: "шт",
+    price: 9600,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 390
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 120
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 340
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-014",
+    name: "Зажим канатный (ТРОСОВЫЙ) D22 DIN 741",
+    sku: "KM-MET-8281",
+    erpItemId: "NOM-584081",
+    categoryId: "cat-metizy-i-zazhimy-i-kanatnye",
+    unit: "шт",
+    price: 1250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 430
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 200
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 400
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-015",
+    name: "Зажим канатный (ТРОСОВЫЙ) D40 DIN 741",
+    sku: "KM-MET-9900",
+    erpItemId: "NOM-561700",
+    categoryId: "cat-metizy-i-zazhimy-i-kanatnye",
+    unit: "шт",
+    price: 5250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 120
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 600
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-016",
+    name: "Зажим канатный (ТРОСОВЫЙ) D10 DIN 741",
+    sku: "KM-MET-5043",
+    erpItemId: "NOM-528843",
+    categoryId: "cat-metizy-i-zazhimy-i-kanatnye",
+    unit: "шт",
+    price: 4400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 390
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 580
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-metizy-i-017",
+    name: "Проушины навесных замков PSL-PE1",
+    sku: "KM-MET-6662",
+    erpItemId: "NOM-506462",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-proushiny",
+    unit: "шт",
+    price: 4750,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 260
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-018",
+    name: "Ушко У1-7-16",
+    sku: "KM-MET-9709",
+    erpItemId: "NOM-573605",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-proushiny",
+    unit: "шт",
+    price: 2900,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 250
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 60
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 540
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-019",
+    name: "Ухо контакное ч.бм 7034",
+    sku: "KM-MET-2328",
+    erpItemId: "NOM-551224",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-proushiny",
+    unit: "шт",
+    price: 3800,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 250
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 540
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-020",
+    name: "Клин пазовый",
+    sku: "KM-MET-8184",
+    erpItemId: "NOM-582888",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-montazhnye",
+    unit: "шт",
+    price: 1700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 320
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 310
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 210
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-021",
+    name: "Клин отделительный 20Х20Х0,13",
+    sku: "KM-MET-6565",
+    erpItemId: "NOM-560507",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-montazhnye",
+    unit: "шт",
+    price: 4550,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 350
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 400
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-metizy-i-022",
+    name: "Клин B913S7450B",
+    sku: "KM-MET-4946",
+    erpItemId: "NOM-538126",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-montazhnye",
+    unit: "шт",
+    price: 3050,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 320
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-metizy-i-023",
+    name: "Шпонка опорного кольца №М.1395",
+    sku: "KM-MET-3327",
+    erpItemId: "NOM-515745",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-shponki",
+    unit: "шт",
+    price: 850,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 2000
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 2650
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 1200
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-metizy-i-024",
+    name: "Шпонка 314042-П2",
+    sku: "KM-MET-1708",
+    erpItemId: "NOM-593364",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-shponki",
+    unit: "шт",
+    price: 1850,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 70
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 230
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-metizy-i-025",
+    name: "Шпонка специальная насоса 1Д 1250-125 Ч.ГМ10574.49",
+    sku: "KM-MET-9089",
+    erpItemId: "NOM-570983",
+    categoryId: "cat-metizy-i-specialnyy-krepezh-shponki",
+    unit: "шт",
+    price: 4050,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 150
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-001",
+    name: "Выключатель авт. ВА88-33 3Р 160А 35КА",
+    sku: "KM-ELE-1129",
+    erpItemId: "NOM-513631",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-avtomaticheskie",
+    unit: "шт",
+    price: 75000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 8
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 22
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz",
+    imageUrl: "/products/vyklyuchatel.jpg"
+  },
+  {
+    id: "prd-elektrotehnika-i-002",
+    name: "Выключатель авт. ВА25-29DC-2-С-2 2P 2А (C)",
+    sku: "KM-ELE-5728",
+    erpItemId: "NOM-546488",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-avtomaticheskie",
+    unit: "шт",
+    price: 58500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 24
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 64
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-003",
+    name: "Датчик ВБО-У25-80У-1273-ЛА",
+    sku: "KM-ELE-4109",
+    erpItemId: "NOM-568869",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-datchiki",
+    unit: "шт",
+    price: 89500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 8
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 88
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 84
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-004",
+    name: "Датчик температуры ДТС034-РТ100.ВЗ.20/0,5",
+    sku: "KM-ELE-5986",
+    erpItemId: "NOM-580774",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-datchiki",
+    unit: "шт",
+    price: 82500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 60
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 46
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-005",
+    name: "Датчик КСЛ-2М",
+    sku: "KM-ELE-7605",
+    erpItemId: "NOM-503155",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-datchiki",
+    unit: "шт",
+    price: 51000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 6
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 6
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-elektrotehnika-i-006",
+    name: "Кнопка КУ-123-11",
+    sku: "KM-ELE-2748",
+    erpItemId: "NOM-536012",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-pereklyuchateli",
+    unit: "шт",
+    price: 11000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 10
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 80
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 10
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-007",
+    name: "Переключатель 4G10-53-U-S1-R014 кулачковый",
+    sku: "KM-ELE-4367",
+    erpItemId: "NOM-558393",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-pereklyuchateli",
+    unit: "шт",
+    price: 26000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 36
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-008",
+    name: "Переключатель 4G10-55-OU-S1-R014 кулачковый",
+    sku: "KM-ELE-3462",
+    erpItemId: "NOM-512202",
+    categoryId: "cat-elektrotehnika-i-promyshlennaya-avtomat-pereklyuchateli",
+    unit: "шт",
+    price: 39500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 48
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 28
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 86
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-009",
+    name: "Клемник WAGO 221-413 3-ПРОВ 0,08-2,5-4 мм.кв",
+    sku: "KM-ELE-5081",
+    erpItemId: "NOM-534583",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-klemmy",
+    unit: "шт",
+    price: 1050,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 490
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-elektrotehnika-i-010",
+    name: "Наконечник кабельный круглый C-RC 2,5/M4 DIN 3240078 100ШТ",
+    sku: "KM-ELE-3745",
+    erpItemId: "NOM-578441",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-klemmy",
+    unit: "шт",
+    price: 4400,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 490
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 540
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-011",
+    name: "Наконечник кабельный круглый C-RC 2,5/M5 DIN 3240079 100ШТ",
+    sku: "KM-ELE-5364",
+    erpItemId: "NOM-556060",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-klemmy",
+    unit: "шт",
+    price: 1300,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 390
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-012",
+    name: "Часть нижняя пульта TOPPULT TP 6700.500 600х675х400",
+    sku: "KM-ELE-9507",
+    erpItemId: "NOM-523203",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektrotehnicheskie",
+    unit: "шт",
+    price: 206000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 1
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-elektrotehnika-i-013",
+    name: "Коробка шахтная высоковольтная 400х250ММ",
+    sku: "KM-ELE-2126",
+    erpItemId: "NOM-500822",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektrotehnicheskie",
+    unit: "шт",
+    price: 259000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 10
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 4
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 8
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-014",
+    name: "Шкаф ШКУ-02-500Х400Х250 коммутационный антивандальный",
+    sku: "KM-ELE-1221",
+    erpItemId: "NOM-588917",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektrotehnicheskie",
+    unit: "шт",
+    price: 84000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 28
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-015",
+    name: "Разъем D-SUB 9-ПОЛЮСНЫЙ, PROFIBUS DP до 12МБИТ/С 2708232",
+    sku: "KM-ELE-2840",
+    erpItemId: "NOM-566536",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektricheskie",
+    unit: "шт",
+    price: 4700,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 230
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 120
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 60
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-016",
+    name: "Переходник на евро розетку 47Х58Х22 белый",
+    sku: "KM-ELE-6983",
+    erpItemId: "NOM-533679",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektricheskie",
+    unit: "шт",
+    price: 23300,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 62
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 84
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 72
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-elektrotehnika-i-017",
+    name: "Разъем герметичный RJ45 IP68 с проходным адаптером 2X8P8C",
+    sku: "KM-ELE-8602",
+    erpItemId: "NOM-511298",
+    categoryId: "cat-elektrotehnika-i-elektromontazhnye-izde-elektricheskie",
+    unit: "шт",
+    price: 23000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 40
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 26
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-018",
+    name: "Ибп 6000ВА 230В SRT6KXLI",
+    sku: "KM-ELE-8793",
+    erpItemId: "NOM-599393",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-istochniki",
+    unit: "шт",
+    price: 187500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 5
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-019",
+    name: "Преобразователь напряжения 12/220 1500ВТ инверторный",
+    sku: "KM-ELE-1412",
+    erpItemId: "NOM-577012",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-istochniki",
+    unit: "шт",
+    price: 31500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 78
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 68
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 44
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-020",
+    name: "Блок питания 76ВТ 24В 3,2А DIN",
+    sku: "KM-ELE-7700",
+    erpItemId: "NOM-515196",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-istochniki",
+    unit: "шт",
+    price: 88500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 26
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-021",
+    name: "Реле ЭП-41В-21 220В промежуточное",
+    sku: "KM-ELE-9319",
+    erpItemId: "NOM-592815",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-promezhutochnye",
+    unit: "шт",
+    price: 36250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 36
+      },
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 26
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 44
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-022",
+    name: "Реле 1670138/2543783",
+    sku: "KM-ELE-1938",
+    erpItemId: "NOM-570434",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-promezhutochnye",
+    unit: "шт",
+    price: 35500,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 82
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 8
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  },
+  {
+    id: "prd-elektrotehnika-i-023",
+    name: "Реле 3T2662",
+    sku: "KM-ELE-3557",
+    erpItemId: "NOM-548053",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-promezhutochnye",
+    unit: "шт",
+    price: 40250,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 38
+      }
+    ],
+    primaryWarehouseId: "wh-zhz",
+    primaryRegionId: "reg-zhz"
+  },
+  {
+    id: "prd-elektrotehnika-i-024",
+    name: "Пускатель многофункциональн TESYS U 12А 110-240VAC UIMP-6KV",
+    sku: "KM-ELE-1224",
+    erpItemId: "NOM-504720",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-puskateli",
+    unit: "шт",
+    price: 20000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 18
+      },
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 56
+      }
+    ],
+    primaryWarehouseId: "wh-chu",
+    primaryRegionId: "reg-chu"
+  },
+  {
+    id: "prd-elektrotehnika-i-025",
+    name: "Пускатель ПРН-100-УХЛ3 100А 380В РН1 IP54 рудничный",
+    sku: "KM-ELE-2843",
+    erpItemId: "NOM-582339",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-puskateli",
+    unit: "шт",
+    price: 71000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-krg",
+        regionId: "reg-krg",
+        quantity: 52
+      }
+    ],
+    primaryWarehouseId: "wh-krg",
+    primaryRegionId: "reg-krg"
+  },
+  {
+    id: "prd-elektrotehnika-i-026",
+    name: "Пускатель ПРР-40М-1-УХЛ5 380В с реверсивным приводом",
+    sku: "KM-ELE-4462",
+    erpItemId: "NOM-559958",
+    categoryId: "cat-elektrotehnika-i-silovaya-elektronika-puskateli",
+    unit: "шт",
+    price: 88000,
+    vatRate: 12,
+    stock: [
+      {
+        warehouseId: "wh-blh",
+        regionId: "reg-blh",
+        quantity: 80
+      },
+      {
+        warehouseId: "wh-zhz",
+        regionId: "reg-zhz",
+        quantity: 38
+      },
+      {
+        warehouseId: "wh-chu",
+        regionId: "reg-chu",
+        quantity: 78
+      }
+    ],
+    primaryWarehouseId: "wh-blh",
+    primaryRegionId: "reg-blh"
+  }
+];
+
+function toStock(rows: ProductRow["stock"]): StockBalance[] {
+  return rows.map((row) => ({ ...row, updatedAt: STOCK_SYNCED_AT }));
 }
 
-function buildProduct(row: ProductRow): Product {
+export const PRODUCTS: Product[] = PRODUCT_ROWS.map((row) => {
   const purchaseCategoryId = rootCategoryId(row.categoryId);
   const supplier = supplierOfCategory(purchaseCategoryId);
   if (!supplier) {
@@ -60,844 +3807,18 @@ function buildProduct(row: ProductRow): Product {
       `Нет поставщика для категории закупа ${purchaseCategoryId} (позиция ${row.id})`
     );
   }
-  const [primaryWarehouseId] = row.stock[0];
   return {
-    id: row.id,
-    name: row.name,
-    sku: row.sku,
-    erpItemId: row.erpItemId,
-    categoryId: row.categoryId,
+    ...row,
     supplierId: supplier.id,
-    unit: row.unit,
-    price: row.price,
-    vatRate: 12,
     stock: toStock(row.stock),
-    primaryWarehouseId,
-    primaryRegionId: WAREHOUSE_REGION[primaryWarehouseId],
-    ...(row.serviceLifeDays === undefined
-      ? {}
-      : { serviceLifeDays: row.serviceLifeDays }),
-    ...(row.description === undefined ? {} : { description: row.description }),
-    ...(row.isArchived === undefined ? {} : { isArchived: row.isArchived }),
   };
-}
-
-const PRODUCT_ROWS: ProductRow[] = [
-  // ——————————————————— Канцелярия (ТОО «Канц-Маркет Казахстан») ———————————————————
-  {
-    id: "prd-off-001",
-    name: "Бумага офисная A4 80 г/м², пачка 500 л",
-    sku: "KM-PAP-A4-80",
-    erpItemId: "NOM-100241",
-    categoryId: "cat-office-paper",
-    unit: "пач",
-    price: 2350,
-    stock: [
-      ["wh-krg", 1840, 120],
-      ["wh-blh", 620],
-      ["wh-zhz", 410],
-    ],
-    description: "Класс C, белизна 146% CIE. Для офисной печати и копирования.",
-  },
-  {
-    id: "prd-off-002",
-    name: "Бумага офисная A3 80 г/м², пачка 500 л",
-    sku: "KM-PAP-A3-80",
-    erpItemId: "NOM-100242",
-    categoryId: "cat-office-paper",
-    unit: "пач",
-    price: 4890,
-    stock: [
-      ["wh-krg", 260],
-      ["wh-blh", 85],
-    ],
-  },
-  {
-    id: "prd-off-003",
-    name: "Бумага для плоттера, рулон 610 мм × 50 м, 80 г/м²",
-    sku: "KM-PAP-ROLL-610",
-    erpItemId: "NOM-100248",
-    categoryId: "cat-office-paper",
-    unit: "рул",
-    price: 7450,
-    stock: [["wh-krg", 42]],
-    description: "Для печати маркшейдерских планов и схем.",
-  },
-  {
-    id: "prd-off-004",
-    name: "Ручка шариковая синяя 0,7 мм",
-    sku: "KM-PEN-BL-07",
-    erpItemId: "NOM-100310",
-    categoryId: "cat-office-write",
-    unit: "шт",
-    price: 95,
-    stock: [
-      ["wh-krg", 6200, 350],
-      ["wh-blh", 2100],
-      ["wh-zhz", 1450],
-      ["wh-chu", 700],
-    ],
-  },
-  {
-    id: "prd-off-005",
-    name: "Карандаш чернографитный HB с ластиком",
-    sku: "KM-PNC-HB",
-    erpItemId: "NOM-100312",
-    categoryId: "cat-office-write",
-    unit: "шт",
-    price: 70,
-    stock: [
-      ["wh-krg", 4300],
-      ["wh-blh", 1200],
-    ],
-  },
-  {
-    id: "prd-off-006",
-    name: "Маркер перманентный чёрный, круглый наконечник 2 мм",
-    sku: "KM-MRK-PRM-BK",
-    erpItemId: "NOM-100318",
-    categoryId: "cat-office-write",
-    unit: "шт",
-    price: 320,
-    stock: [
-      ["wh-krg", 980],
-      ["wh-blh", 340],
-    ],
-  },
-  {
-    id: "prd-off-007",
-    name: "Текстовыделитель жёлтый, скошенный наконечник",
-    sku: "KM-MRK-HL-YL",
-    erpItemId: "NOM-100319",
-    categoryId: "cat-office-write",
-    unit: "шт",
-    price: 280,
-    stock: [["wh-krg", 760]],
-  },
-  {
-    id: "prd-off-008",
-    name: "Картридж лазерный HP CF259A (59A), 3000 стр.",
-    sku: "KM-TNR-CF259A",
-    erpItemId: "NOM-100405",
-    categoryId: "cat-office-print",
-    unit: "шт",
-    price: 46800,
-    stock: [
-      ["wh-krg", 74, 12],
-      ["wh-blh", 22],
-    ],
-    description: "Оригинальный картридж для HP LaserJet Pro M404/M428.",
-  },
-  {
-    id: "prd-off-009",
-    name: "Картридж лазерный Canon 052, 3100 стр.",
-    sku: "KM-TNR-CNN052",
-    erpItemId: "NOM-100407",
-    categoryId: "cat-office-print",
-    unit: "шт",
-    price: 32400,
-    stock: [
-      ["wh-krg", 51],
-      ["wh-zhz", 18],
-    ],
-  },
-  {
-    id: "prd-off-010",
-    name: "Папка-регистратор A4, 75 мм, ламинированный картон",
-    sku: "KM-FLD-REG-75",
-    erpItemId: "NOM-100501",
-    categoryId: "cat-office-archive",
-    unit: "шт",
-    price: 1250,
-    stock: [
-      ["wh-krg", 1320, 60],
-      ["wh-blh", 480],
-      ["wh-zhz", 310],
-    ],
-  },
-  {
-    id: "prd-off-011",
-    name: "Файл-вкладыш A4 40 мкм, упаковка 100 шт",
-    sku: "KM-FLD-SLV-100",
-    erpItemId: "NOM-100504",
-    categoryId: "cat-office-archive",
-    unit: "упак",
-    price: 2100,
-    stock: [
-      ["wh-krg", 640],
-      ["wh-blh", 190],
-    ],
-  },
-  {
-    id: "prd-off-012",
-    name: "Скобы для степлера №24/6, упаковка 1000 шт",
-    sku: "KM-STP-24-6",
-    erpItemId: "NOM-100520",
-    categoryId: "cat-office-write",
-    unit: "упак",
-    price: 320,
-    stock: [
-      ["wh-krg", 1450],
-      ["wh-blh", 520],
-    ],
-  },
-  {
-    id: "prd-off-013",
-    name: "Степлер металлический №24/6, до 25 листов",
-    sku: "KM-STP-MET-25",
-    erpItemId: "NOM-100521",
-    categoryId: "cat-office-write",
-    unit: "шт",
-    price: 1450,
-    stock: [["wh-krg", 210]],
-  },
-  {
-    id: "prd-off-014",
-    name: "Клейкая лента упаковочная 48 мм × 66 м",
-    sku: "KM-TPE-48-66",
-    erpItemId: "NOM-100530",
-    categoryId: "cat-office-archive",
-    unit: "рул",
-    price: 690,
-    stock: [
-      ["wh-krg", 880],
-      ["wh-blh", 260],
-      ["wh-chu", 120],
-    ],
-  },
-
-  // ——————————————————— Хозтовары (ТОО «Тазалык Сервис») ———————————————————
-  {
-    id: "prd-hhd-001",
-    name: "Средство для мытья посуды концентрат, канистра 5 л",
-    sku: "TZ-DSH-5L",
-    erpItemId: "NOM-200104",
-    categoryId: "cat-household-wash",
-    unit: "шт",
-    price: 3200,
-    stock: [
-      ["wh-krg", 320],
-      ["wh-blh", 180],
-      ["wh-zhz", 140],
-    ],
-  },
-  {
-    id: "prd-hhd-002",
-    name: "Средство для чистки сантехники, 1 л",
-    sku: "TZ-SAN-1L",
-    erpItemId: "NOM-200108",
-    categoryId: "cat-household-wash",
-    unit: "шт",
-    price: 980,
-    stock: [
-      ["wh-krg", 540],
-      ["wh-blh", 220],
-    ],
-  },
-  {
-    id: "prd-hhd-003",
-    name: "Дезинфицирующее средство хлорсодержащее, канистра 5 л",
-    sku: "TZ-DIS-5L",
-    erpItemId: "NOM-200112",
-    categoryId: "cat-household-wash",
-    unit: "шт",
-    price: 4350,
-    stock: [
-      ["wh-krg", 210, 24],
-      ["wh-blh", 95],
-      ["wh-chu", 60],
-    ],
-  },
-  {
-    id: "prd-hhd-004",
-    name: "Мыло жидкое антибактериальное, канистра 5 л",
-    sku: "TZ-SOAP-5L",
-    erpItemId: "NOM-200120",
-    categoryId: "cat-household-wash",
-    unit: "шт",
-    price: 3750,
-    stock: [
-      ["wh-krg", 260],
-      ["wh-zhz", 110],
-    ],
-  },
-  {
-    id: "prd-hhd-005",
-    name: "Мешки для мусора 120 л, 30 мкм, упаковка 10 шт",
-    sku: "TZ-BAG-120",
-    erpItemId: "NOM-200205",
-    categoryId: "cat-household-clean",
-    unit: "упак",
-    price: 850,
-    stock: [
-      ["wh-krg", 1240],
-      ["wh-blh", 610],
-      ["wh-zhz", 380],
-      ["wh-chu", 220],
-    ],
-  },
-  {
-    id: "prd-hhd-006",
-    name: "Швабра с телескопической ручкой и насадкой МОП",
-    sku: "TZ-MOP-TEL",
-    erpItemId: "NOM-200210",
-    categoryId: "cat-household-clean",
-    unit: "шт",
-    price: 3900,
-    stock: [
-      ["wh-krg", 145],
-      ["wh-blh", 62],
-    ],
-  },
-  {
-    id: "prd-hhd-007",
-    name: "Ведро пластиковое 12 л с отжимом",
-    sku: "TZ-BKT-12",
-    erpItemId: "NOM-200212",
-    categoryId: "cat-household-clean",
-    unit: "шт",
-    price: 1700,
-    stock: [
-      ["wh-krg", 180],
-      ["wh-chu", 40],
-    ],
-  },
-  {
-    id: "prd-hhd-008",
-    name: "Салфетки из микрофибры 30×30 см, упаковка 5 шт",
-    sku: "TZ-CLT-MF5",
-    erpItemId: "NOM-200215",
-    categoryId: "cat-household-clean",
-    unit: "упак",
-    price: 1240,
-    stock: [
-      ["wh-krg", 420],
-      ["wh-blh", 160],
-    ],
-  },
-  {
-    id: "prd-hhd-009",
-    name: "Ветошь обтирочная х/б",
-    sku: "TZ-RAG-KG",
-    erpItemId: "NOM-200220",
-    categoryId: "cat-household-clean",
-    unit: "кг",
-    price: 640,
-    stock: [
-      ["wh-blh", 1450],
-      ["wh-krg", 890],
-      ["wh-zhz", 520],
-    ],
-    description: "Для обтирки узлов и оборудования в ремонтных цехах.",
-  },
-  {
-    id: "prd-hhd-010",
-    name: "Бумага туалетная двухслойная, упаковка 8 рулонов",
-    sku: "TZ-TPR-8",
-    erpItemId: "NOM-200230",
-    categoryId: "cat-household-clean",
-    unit: "упак",
-    price: 1890,
-    stock: [
-      ["wh-krg", 760],
-      ["wh-blh", 340],
-      ["wh-zhz", 210],
-    ],
-  },
-  {
-    id: "prd-hhd-011",
-    name: "Лампа светодиодная E27 15 Вт, 4000K",
-    sku: "TZ-LMP-E27-15",
-    erpItemId: "NOM-200305",
-    categoryId: "cat-household-lamps",
-    unit: "шт",
-    price: 1250,
-    stock: [
-      ["wh-krg", 1580, 90],
-      ["wh-blh", 720],
-      ["wh-zhz", 410],
-      ["wh-chu", 260],
-    ],
-  },
-  {
-    id: "prd-hhd-012",
-    name: "Лампа люминесцентная T8 36 Вт, цоколь G13",
-    sku: "TZ-LMP-T8-36",
-    erpItemId: "NOM-200308",
-    categoryId: "cat-household-lamps",
-    unit: "шт",
-    price: 1480,
-    stock: [
-      ["wh-blh", 640],
-      ["wh-krg", 390],
-    ],
-  },
-
-  // ——————————————————— Инструменты (ТОО «Промснаб Инструмент») ———————————————————
-  {
-    id: "prd-tls-001",
-    name: "Дрель ударная Bosch GSB 13 RE, 600 Вт",
-    sku: "PS-BSH-GSB13RE",
-    erpItemId: "NOM-300101",
-    categoryId: "cat-tools-power",
-    unit: "шт",
-    price: 62900,
-    serviceLifeDays: 540,
-    stock: [
-      ["wh-krg", 34, 4],
-      ["wh-blh", 18],
-      ["wh-chu", 6],
-    ],
-  },
-  {
-    id: "prd-tls-002",
-    name: "Перфоратор Makita HR2470, SDS-plus, 780 Вт",
-    sku: "PS-MKT-HR2470",
-    erpItemId: "NOM-300104",
-    categoryId: "cat-tools-power",
-    unit: "шт",
-    price: 118500,
-    serviceLifeDays: 720,
-    stock: [
-      ["wh-krg", 21],
-      ["wh-blh", 12],
-    ],
-  },
-  {
-    id: "prd-tls-003",
-    name: "УШМ Makita 9558HN, 125 мм, 840 Вт",
-    sku: "PS-MKT-9558HN",
-    erpItemId: "NOM-300107",
-    categoryId: "cat-tools-power",
-    unit: "шт",
-    price: 44700,
-    serviceLifeDays: 365,
-    stock: [
-      ["wh-blh", 46, 6],
-      ["wh-krg", 38],
-      ["wh-zhz", 15],
-    ],
-  },
-  {
-    id: "prd-tls-004",
-    name: "Сабельная пила Bosch GSA 120, 1200 Вт",
-    sku: "PS-BSH-GSA120",
-    erpItemId: "NOM-300110",
-    categoryId: "cat-tools-power",
-    unit: "шт",
-    price: 71300,
-    serviceLifeDays: 540,
-    stock: [
-      ["wh-blh", 14],
-      ["wh-chu", 5],
-    ],
-  },
-  {
-    id: "prd-tls-005",
-    name: "Гайковёрт пневматический ударный 1/2\", 680 Нм",
-    sku: "PS-PNM-IW12",
-    erpItemId: "NOM-300201",
-    categoryId: "cat-tools-pneumo",
-    unit: "шт",
-    price: 78000,
-    serviceLifeDays: 900,
-    stock: [
-      ["wh-blh", 17],
-      ["wh-zhz", 9],
-    ],
-  },
-  {
-    id: "prd-tls-006",
-    name: "Молоток отбойный пневматический МО-2Б",
-    sku: "PS-PNM-MO2B",
-    erpItemId: "NOM-300204",
-    categoryId: "cat-tools-pneumo",
-    unit: "шт",
-    price: 96500,
-    serviceLifeDays: 365,
-    stock: [
-      ["wh-krg", 12],
-      ["wh-blh", 8],
-    ],
-  },
-  {
-    id: "prd-tls-007",
-    name: "Зубило пневматическое (пика) 175 мм",
-    sku: "PS-PNM-CHS175",
-    erpItemId: "NOM-300210",
-    categoryId: "cat-tools-pneumo",
-    unit: "шт",
-    price: 5600,
-    serviceLifeDays: 120,
-    stock: [
-      ["wh-blh", 240, 30],
-      ["wh-krg", 160],
-      ["wh-zhz", 85],
-    ],
-  },
-  {
-    id: "prd-tls-008",
-    name: "Набор ключей рожковых 8–24 мм, 12 предметов",
-    sku: "PS-HND-WRS12",
-    erpItemId: "NOM-300301",
-    categoryId: "cat-tools-hand",
-    unit: "набор",
-    price: 21400,
-    serviceLifeDays: 730,
-    stock: [
-      ["wh-blh", 62],
-      ["wh-krg", 48],
-      ["wh-chu", 14],
-    ],
-  },
-  {
-    id: "prd-tls-009",
-    name: "Ключ разводной 250 мм, губки до 30 мм",
-    sku: "PS-HND-ADJ250",
-    erpItemId: "NOM-300304",
-    categoryId: "cat-tools-hand",
-    unit: "шт",
-    price: 4850,
-    serviceLifeDays: 180,
-    stock: [
-      ["wh-blh", 185],
-      ["wh-krg", 140],
-      ["wh-zhz", 70],
-    ],
-  },
-  {
-    id: "prd-tls-010",
-    name: "Набор отвёрток диэлектрических 1000 В, 7 предметов",
-    sku: "PS-HND-SCR7VDE",
-    erpItemId: "NOM-300308",
-    categoryId: "cat-tools-hand",
-    unit: "набор",
-    price: 9700,
-    serviceLifeDays: 365,
-    stock: [
-      ["wh-krg", 96],
-      ["wh-blh", 54],
-    ],
-  },
-  {
-    id: "prd-tls-011",
-    name: "Пассатижи диэлектрические VDE 180 мм",
-    sku: "PS-HND-PLR180",
-    erpItemId: "NOM-300311",
-    categoryId: "cat-tools-hand",
-    unit: "шт",
-    price: 6400,
-    serviceLifeDays: 270,
-    stock: [
-      ["wh-krg", 130],
-      ["wh-blh", 88],
-    ],
-  },
-  {
-    id: "prd-tls-012",
-    name: "Молоток слесарный 800 г, фиберглассовая рукоять",
-    sku: "PS-HND-HMR800",
-    erpItemId: "NOM-300314",
-    categoryId: "cat-tools-hand",
-    unit: "шт",
-    price: 3100,
-    serviceLifeDays: 365,
-    stock: [
-      ["wh-blh", 210],
-      ["wh-krg", 175],
-      ["wh-chu", 45],
-    ],
-  },
-  {
-    id: "prd-tls-013",
-    name: "Бур SDS-max 18×600 мм",
-    sku: "PS-CNS-SDSMX18",
-    erpItemId: "NOM-300401",
-    categoryId: "cat-tools-consumables",
-    unit: "шт",
-    price: 6900,
-    serviceLifeDays: 90,
-    stock: [
-      ["wh-krg", 320, 40],
-      ["wh-blh", 145],
-    ],
-  },
-  {
-    id: "prd-tls-014",
-    name: "Сверло по бетону SDS-plus 12×160 мм",
-    sku: "PS-CNS-SDSPL12",
-    erpItemId: "NOM-300404",
-    categoryId: "cat-tools-consumables",
-    unit: "шт",
-    price: 1450,
-    serviceLifeDays: 45,
-    stock: [
-      ["wh-krg", 640, 80],
-      ["wh-blh", 280],
-      ["wh-chu", 95],
-    ],
-  },
-  {
-    id: "prd-tls-015",
-    name: "Полотно для сабельной пилы по металлу, 5 шт",
-    sku: "PS-CNS-SAW5",
-    erpItemId: "NOM-300407",
-    categoryId: "cat-tools-consumables",
-    unit: "упак",
-    price: 4200,
-    serviceLifeDays: 60,
-    stock: [
-      ["wh-blh", 230],
-      ["wh-chu", 78],
-    ],
-  },
-  {
-    id: "prd-tls-016",
-    name: "Коронка алмазная 68 мм по бетону",
-    sku: "PS-CNS-DMC68",
-    erpItemId: "NOM-300410",
-    categoryId: "cat-tools-consumables",
-    unit: "шт",
-    price: 27500,
-    serviceLifeDays: 150,
-    stock: [
-      ["wh-krg", 44, 8],
-      ["wh-blh", 26],
-    ],
-  },
-  {
-    id: "prd-tls-017",
-    name: "Пильный диск по металлу 355×3,0 мм",
-    sku: "PS-CNS-CD355",
-    erpItemId: "NOM-300413",
-    categoryId: "cat-tools-consumables",
-    unit: "шт",
-    price: 8900,
-    serviceLifeDays: 75,
-    stock: [
-      ["wh-chu", 120],
-      ["wh-blh", 86],
-      ["wh-krg", 64],
-    ],
-  },
-  {
-    id: "prd-tls-018",
-    name: "Сверло по металлу HSS-Co 10 мм, упаковка 10 шт",
-    sku: "PS-CNS-HSS10",
-    erpItemId: "NOM-300416",
-    categoryId: "cat-tools-consumables",
-    unit: "упак",
-    price: 6300,
-    serviceLifeDays: 30,
-    stock: [
-      ["wh-blh", 310, 45],
-      ["wh-krg", 190],
-      ["wh-zhz", 120],
-    ],
-  },
-
-  // ——————————————— Прочие (ТОО «Казахстан Индастриал Групп») ———————————————
-  {
-    id: "prd-oth-001",
-    name: "Перчатки х/б с ПВХ-точками, пара",
-    sku: "KIG-PPE-GLV-PVC",
-    erpItemId: "NOM-400101",
-    categoryId: "cat-other-ppe",
-    unit: "пара",
-    price: 320,
-    stock: [
-      ["wh-krg", 8600, 600],
-      ["wh-blh", 4200],
-      ["wh-zhz", 2400],
-      ["wh-chu", 1350],
-    ],
-  },
-  {
-    id: "prd-oth-002",
-    name: "Каска защитная с храповиком, белая",
-    sku: "KIG-PPE-HLM-W",
-    erpItemId: "NOM-400104",
-    categoryId: "cat-other-ppe",
-    unit: "шт",
-    price: 3950,
-    stock: [
-      ["wh-krg", 420],
-      ["wh-blh", 260],
-      ["wh-chu", 90],
-    ],
-  },
-  {
-    id: "prd-oth-003",
-    name: "Очки защитные открытые, поликарбонат",
-    sku: "KIG-PPE-GLS-OP",
-    erpItemId: "NOM-400107",
-    categoryId: "cat-other-ppe",
-    unit: "шт",
-    price: 1850,
-    stock: [
-      ["wh-krg", 680],
-      ["wh-blh", 390],
-    ],
-  },
-  {
-    id: "prd-oth-004",
-    name: "Респиратор 3M 8102 FFP2, упаковка 20 шт",
-    sku: "KIG-PPE-RSP-3M20",
-    erpItemId: "NOM-400110",
-    categoryId: "cat-other-ppe",
-    unit: "упак",
-    price: 12400,
-    stock: [
-      ["wh-krg", 165, 20],
-      ["wh-blh", 92],
-      ["wh-zhz", 48],
-    ],
-  },
-  {
-    id: "prd-oth-005",
-    name: "Костюм сварщика брезентовый с крагами",
-    sku: "KIG-PPE-WLD-SET",
-    erpItemId: "NOM-400115",
-    categoryId: "cat-other-ppe",
-    unit: "компл",
-    price: 28900,
-    stock: [
-      ["wh-blh", 74],
-      ["wh-krg", 52],
-    ],
-  },
-  {
-    id: "prd-oth-006",
-    name: "Сапоги резиновые с металлическим подноском",
-    sku: "KIG-PPE-BOOT-MT",
-    erpItemId: "NOM-400118",
-    categoryId: "cat-other-ppe",
-    unit: "пара",
-    price: 9400,
-    stock: [
-      ["wh-chu", 120],
-      ["wh-blh", 96],
-      ["wh-krg", 84],
-    ],
-  },
-  {
-    id: "prd-oth-007",
-    name: "Наушники противошумные, SNR 31 дБ",
-    sku: "KIG-PPE-EAR-31",
-    erpItemId: "NOM-400121",
-    categoryId: "cat-other-ppe",
-    unit: "шт",
-    price: 4300,
-    stock: [
-      ["wh-blh", 210],
-      ["wh-krg", 140],
-    ],
-  },
-  {
-    id: "prd-oth-008",
-    name: "Пояс предохранительный лямочный, 2 стропа",
-    sku: "KIG-PPE-HRN-2",
-    erpItemId: "NOM-400124",
-    categoryId: "cat-other-ppe",
-    unit: "шт",
-    price: 18700,
-    stock: [
-      ["wh-krg", 68],
-      ["wh-zhz", 34],
-    ],
-  },
-  {
-    id: "prd-oth-009",
-    name: "Штангенциркуль 150 мм, цена деления 0,05 мм",
-    sku: "KIG-MSR-CLP150",
-    erpItemId: "NOM-400201",
-    categoryId: "cat-other-measure",
-    unit: "шт",
-    price: 12500,
-    stock: [
-      ["wh-blh", 58],
-      ["wh-krg", 41],
-    ],
-  },
-  {
-    id: "prd-oth-010",
-    name: "Рулетка измерительная 5 м, обрезиненный корпус",
-    sku: "KIG-MSR-TAP5",
-    erpItemId: "NOM-400204",
-    categoryId: "cat-other-measure",
-    unit: "шт",
-    price: 1950,
-    stock: [
-      ["wh-krg", 320],
-      ["wh-blh", 210],
-      ["wh-chu", 65],
-    ],
-  },
-  {
-    id: "prd-oth-011",
-    name: "Уровень строительный 800 мм, 3 глазка",
-    sku: "KIG-MSR-LVL800",
-    erpItemId: "NOM-400207",
-    categoryId: "cat-other-measure",
-    unit: "шт",
-    price: 6700,
-    stock: [
-      ["wh-krg", 96],
-      ["wh-blh", 54],
-    ],
-  },
-  {
-    id: "prd-oth-012",
-    name: "Мультиметр цифровой True RMS, CAT III 600 В",
-    sku: "KIG-MSR-DMM-TR",
-    erpItemId: "NOM-400210",
-    categoryId: "cat-other-measure",
-    unit: "шт",
-    price: 24900,
-    stock: [
-      ["wh-krg", 37],
-      ["wh-blh", 22],
-      ["wh-zhz", 11],
-    ],
-  },
-  {
-    id: "prd-oth-013",
-    name: "Диск отрезной по металлу 125×1,6×22,2 мм",
-    sku: "KIG-ABR-CD125",
-    erpItemId: "NOM-400301",
-    categoryId: "cat-other-abrasive",
-    unit: "шт",
-    price: 420,
-    stock: [
-      ["wh-blh", 4800, 400],
-      ["wh-krg", 3200],
-      ["wh-zhz", 1600],
-      ["wh-chu", 950],
-    ],
-  },
-  {
-    id: "prd-oth-014",
-    name: "Круг зачистной 180×6×22,2 мм",
-    sku: "KIG-ABR-GD180",
-    erpItemId: "NOM-400304",
-    categoryId: "cat-other-abrasive",
-    unit: "шт",
-    price: 890,
-    stock: [
-      ["wh-blh", 1450],
-      ["wh-krg", 980],
-      ["wh-chu", 340],
-    ],
-  },
-];
-
-export const PRODUCTS: Product[] = PRODUCT_ROWS.map(buildProduct);
+});
 
 export function productById(id: string): Product | undefined {
   return PRODUCTS.find((p) => p.id === id);
 }
 
-/** Позиции категории закупа со всеми подгруппами. */
+/** Позиции категории закупа со всеми вложенными группами и видами. */
 export function productsOfPurchaseCategory(purchaseCategoryId: string): Product[] {
   return PRODUCTS.filter(
     (p) => rootCategoryId(p.categoryId) === purchaseCategoryId

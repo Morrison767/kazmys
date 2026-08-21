@@ -35,6 +35,9 @@ export {
   rootCategoryId,
   categoryWithDescendantIds,
   childCategories,
+  categoryLevel,
+  leafCategories,
+  categoryPath,
 } from "./categories";
 
 // Поставщики и рамочные договоры

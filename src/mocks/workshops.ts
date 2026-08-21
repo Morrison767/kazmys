@@ -3,11 +3,11 @@ import type { Workshop } from "@/types";
 /**
  * Цеха и участки — единицы потребления и точки контроля лимитов.
  * allowedCategoryIds реализует ограничение «по типу товара»: буровой
- * участок видит инструмент и СИЗ, но не канцелярию; бухгалтерия —
- * только канцелярию и хозтовары.
+ * участок видит инструмент, оснастку, метизы и СИЗ, но не канцелярию;
+ * бухгалтерия — только хозяйственные и офисные товары.
  *
- * Указываются категории закупа верхнего уровня; подгруппы товара
- * разворачиваются от них (см. categories.ts → rootCategoryId).
+ * Указываются категории закупа верхнего уровня (разделы номенклатуры);
+ * группы и виды разворачиваются от них — см. categories.ts.
  */
 export const WORKSHOPS: Workshop[] = [
   {
@@ -16,7 +16,12 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-krg-kpk",
     regionId: "reg-krg",
     costCenter: "KRG-BU-01",
-    allowedCategoryIds: ["cat-tools", "cat-other"],
+    allowedCategoryIds: [
+      "cat-instrumenty-i",
+      "cat-rashodnye-materialy",
+      "cat-metizy-i",
+      "cat-specodezhda-i",
+    ],
     defaultWarehouseId: "wh-krg",
   },
   {
@@ -25,7 +30,7 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-krg-kpk",
     regionId: "reg-krg",
     costCenter: "KRG-AUP-04",
-    allowedCategoryIds: ["cat-office", "cat-household"],
+    allowedCategoryIds: ["cat-hozyaystvennye-ofisnye"],
     defaultWarehouseId: "wh-krg",
   },
   {
@@ -34,7 +39,11 @@ export const WORKSHOPS: Workshop[] = [
     /** Предприятие вне D365 F&O — заказы идут по упрощённому пути. */
     enterpriseId: "ent-krg-svc",
     regionId: "reg-krg",
-    allowedCategoryIds: ["cat-office", "cat-household", "cat-tools"],
+    allowedCategoryIds: [
+      "cat-hozyaystvennye-ofisnye",
+      "cat-instrumenty-i",
+      "cat-elektrotehnika-i",
+    ],
     defaultWarehouseId: "wh-krg",
   },
   {
@@ -43,7 +52,11 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-blh-smelting",
     regionId: "reg-blh",
     costCenter: "BLH-PC-02",
-    allowedCategoryIds: ["cat-tools", "cat-other", "cat-household"],
+    allowedCategoryIds: [
+      "cat-specodezhda-i",
+      "cat-rashodnye-materialy",
+      "cat-elektrotehnika-i",
+    ],
     defaultWarehouseId: "wh-blh",
   },
   {
@@ -52,7 +65,12 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-blh-gok",
     regionId: "reg-blh",
     costCenter: "BLH-RMC-01",
-    allowedCategoryIds: ["cat-tools", "cat-other"],
+    allowedCategoryIds: [
+      "cat-instrumenty-i",
+      "cat-rashodnye-materialy",
+      "cat-metizy-i",
+      "cat-elektrotehnika-i",
+    ],
     defaultWarehouseId: "wh-blh",
   },
   {
@@ -61,7 +79,7 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-zhz-gmk",
     regionId: "reg-zhz",
     costCenter: "ZHZ-OC-03",
-    allowedCategoryIds: ["cat-tools", "cat-household"],
+    allowedCategoryIds: ["cat-instrumenty-i", "cat-rashodnye-materialy"],
     defaultWarehouseId: "wh-zhz",
   },
   {
@@ -70,7 +88,11 @@ export const WORKSHOPS: Workshop[] = [
     enterpriseId: "ent-chu-shatyrkul",
     regionId: "reg-chu",
     costCenter: "CHU-UO-01",
-    allowedCategoryIds: ["cat-tools", "cat-other", "cat-household"],
+    allowedCategoryIds: [
+      "cat-specodezhda-i",
+      "cat-hozyaystvennye-ofisnye",
+      "cat-rashodnye-materialy",
+    ],
     defaultWarehouseId: "wh-chu",
   },
 ];

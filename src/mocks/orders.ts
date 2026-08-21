@@ -268,15 +268,15 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000141",
     customerId: "usr-cust-drill",
     lines: [
-      ["prd-tls-013", 8],
-      ["prd-tls-014", 24],
+      ["prd-instrumenty-i-013", 20],
+      ["prd-instrumenty-i-015", 10],
     ],
     history: [
       [
         OrderStatus.Draft,
         "2026-08-19T05:20:00.000Z",
         "Сериков А.М.",
-        "Заявка на бурильную оснастку на сентябрь",
+        "Заявка на метчики под плановые работы сентября",
       ],
     ],
     comment: "Уточнить потребность у сменных мастеров до отправки",
@@ -286,9 +286,8 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000142",
     customerId: "usr-cust-acc",
     lines: [
-      ["prd-off-001", 40],
-      ["prd-off-010", 30],
-      ["prd-off-004", 100],
+      ["prd-hozyaystvennye-ofisnye-001", 20],
+      ["prd-hozyaystvennye-ofisnye-007", 100],
     ],
     history: [[OrderStatus.Draft, "2026-08-18T09:05:00.000Z", "Ибраева Д.С."]],
   },
@@ -299,17 +298,14 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000138",
     customerId: "usr-cust-rem",
     /** Сумма выше порога эскалации — подключены доп. согласующие. */
-    lines: [
-      ["prd-tls-002", 20],
-      ["prd-tls-005", 5],
-    ],
+    lines: [["prd-instrumenty-i-010", 20]],
     history: [
       [OrderStatus.Draft, "2026-08-17T04:40:00.000Z", "Ковалёв Д.С."],
       [
         OrderStatus.PendingApproval,
         "2026-08-17T06:15:00.000Z",
         "Ковалёв Д.С.",
-        "Плановая замена инструмента по программе ремонтов",
+        "Плановая замена фрез по программе ремонтов",
       ],
     ],
     expectedDeliveryAt: "2026-09-10",
@@ -318,11 +314,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-004",
     number: "ЗК-2026-000140",
     customerId: "usr-cust-chu",
-    lines: [
-      ["prd-tls-017", 9],
-      ["prd-tls-015", 6],
-      ["prd-tls-004", 2],
-    ],
+    lines: [["prd-specodezhda-i-011", 8]],
     history: [
       [OrderStatus.Draft, "2026-08-18T03:30:00.000Z", "Абдрахманова Г.Е."],
       [
@@ -340,8 +332,8 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000135",
     customerId: "usr-cust-drill",
     lines: [
-      ["prd-oth-001", 600],
-      ["prd-oth-003", 40],
+      ["prd-rashodnye-materialy-010", 40],
+      ["prd-rashodnye-materialy-001", 4],
     ],
     history: [
       [OrderStatus.Draft, "2026-08-14T04:15:00.000Z", "Сериков А.М."],
@@ -361,11 +353,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-006",
     number: "ЗК-2026-000131",
     customerId: "usr-cust-acc",
-    lines: [
-      ["prd-hhd-005", 120],
-      ["prd-hhd-010", 80],
-      ["prd-hhd-011", 60],
-    ],
+    lines: [["prd-hozyaystvennye-ofisnye-019", 6]],
     history: [
       [OrderStatus.Draft, "2026-08-11T06:00:00.000Z", "Ибраева Д.С."],
       [OrderStatus.PendingApproval, "2026-08-11T07:20:00.000Z", "Ибраева Д.С."],
@@ -374,7 +362,7 @@ const ORDER_ROWS: OrderRow[] = [
         OrderStatus.SentToErp,
         "2026-08-13T02:30:00.000Z",
         "D365 F&O",
-        "Создан Purchase Requisition, привязан к договору ТД-2026-Х-027",
+        "Создан Purchase Requisition, привязан к договору ТД-2026-К-014",
       ],
     ],
     expectedDeliveryAt: "2026-08-28",
@@ -386,9 +374,8 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000126",
     customerId: "usr-cust-rem",
     lines: [
-      ["prd-tls-018", 19],
-      ["prd-tls-009", 25],
-      ["prd-tls-003", 2],
+      ["prd-instrumenty-i-016", 8],
+      ["prd-instrumenty-i-024", 12],
     ],
     history: [
       [OrderStatus.Draft, "2026-08-05T05:30:00.000Z", "Ковалёв Д.С."],
@@ -410,11 +397,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-008",
     number: "ЗК-2026-000119",
     customerId: "usr-cust-drill",
-    lines: [
-      ["prd-tls-016", 4],
-      ["prd-tls-013", 11],
-      ["prd-tls-002", 1],
-    ],
+    lines: [["prd-rashodnye-materialy-004", 2]],
     history: [
       [OrderStatus.Draft, "2026-07-28T04:10:00.000Z", "Сериков А.М."],
       [OrderStatus.PendingApproval, "2026-07-28T05:25:00.000Z", "Сериков А.М."],
@@ -434,10 +417,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-009",
     number: "ЗК-2026-000122",
     customerId: "usr-cust-rem",
-    lines: [
-      ["prd-oth-013", 400],
-      ["prd-oth-014", 120],
-    ],
+    lines: [["prd-metizy-i-013", 30]],
     history: [
       [OrderStatus.Draft, "2026-08-01T05:00:00.000Z", "Ковалёв Д.С."],
       [OrderStatus.PendingApproval, "2026-08-01T06:10:00.000Z", "Ковалёв Д.С."],
@@ -454,10 +434,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-010",
     number: "ЗК-2026-000114",
     customerId: "usr-cust-chu",
-    lines: [
-      ["prd-oth-006", 45],
-      ["prd-oth-002", 60],
-    ],
+    lines: [["prd-specodezhda-i-013", 40]],
     history: [
       [OrderStatus.Draft, "2026-07-22T03:20:00.000Z", "Абдрахманова Г.Е."],
       [
@@ -484,11 +461,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-011",
     number: "ЗК-2026-000087",
     customerId: "usr-cust-drill",
-    /** Заказ на две категории закупа — инструмент и СИЗ. */
-    lines: [
-      ["prd-tls-014", 60],
-      ["prd-oth-001", 700],
-    ],
+    lines: [["prd-instrumenty-i-007", 20]],
     history: [
       [OrderStatus.Draft, "2026-06-15T04:00:00.000Z", "Сериков А.М."],
       [OrderStatus.PendingApproval, "2026-06-15T05:15:00.000Z", "Сериков А.М."],
@@ -512,9 +485,8 @@ const ORDER_ROWS: OrderRow[] = [
     customerId: "usr-cust-rem",
     /** Частичная поставка: по одной позиции получено меньше заказанного. */
     lines: [
-      ["prd-tls-015", 8],
-      ["prd-tls-012", 30, 26],
-      ["prd-tls-008", 10],
+      ["prd-rashodnye-materialy-019", 80],
+      ["prd-rashodnye-materialy-021", 20, 18],
     ],
     history: [
       [OrderStatus.Draft, "2026-06-22T04:25:00.000Z", "Ковалёв Д.С."],
@@ -528,7 +500,7 @@ const ORDER_ROWS: OrderRow[] = [
         OrderStatus.Received,
         "2026-07-14T06:50:00.000Z",
         "Ковалёв Д.С.",
-        "Недопоставка 4 шт по позиции «Молоток слесарный 800 г»",
+        "Недопоставка 2 кг по позиции «Электрод ОЗЛ-8»",
       ],
     ],
     expectedDeliveryAt: "2026-07-12",
@@ -539,8 +511,8 @@ const ORDER_ROWS: OrderRow[] = [
     customerId: "usr-cust-acc",
     /** Сумма ниже порога авто-одобрения — согласование не требовалось. */
     lines: [
-      ["prd-off-001", 20],
-      ["prd-off-004", 50],
+      ["prd-hozyaystvennye-ofisnye-004", 100],
+      ["prd-hozyaystvennye-ofisnye-008", 200],
     ],
     history: [
       [OrderStatus.Draft, "2026-07-02T05:10:00.000Z", "Ибраева Д.С."],
@@ -563,9 +535,8 @@ const ORDER_ROWS: OrderRow[] = [
     number: "ЗК-2026-000079",
     customerId: "usr-cust-chu",
     lines: [
-      ["prd-hhd-003", 24],
-      ["prd-hhd-005", 60],
-      ["prd-hhd-008", 30],
+      ["prd-hozyaystvennye-ofisnye-013", 30],
+      ["prd-hozyaystvennye-ofisnye-011", 20],
     ],
     history: [
       [OrderStatus.Draft, "2026-06-08T03:40:00.000Z", "Абдрахманова Г.Е."],
@@ -587,10 +558,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-015",
     number: "ЗК-2026-000104",
     customerId: "usr-cust-drill",
-    lines: [
-      ["prd-tls-006", 3],
-      ["prd-tls-007", 20],
-    ],
+    lines: [["prd-instrumenty-i-008", 15]],
     history: [
       [OrderStatus.Draft, "2026-07-10T04:05:00.000Z", "Сериков А.М."],
       [OrderStatus.PendingApproval, "2026-07-10T05:20:00.000Z", "Сериков А.М."],
@@ -614,7 +582,7 @@ const ORDER_ROWS: OrderRow[] = [
      * превышение нормы расхода — заказ принудительно ушёл на согласование
      * и был отклонён.
      */
-    lines: [["prd-tls-018", 24]],
+    lines: [["prd-rashodnye-materialy-013", 60]],
     history: [
       [OrderStatus.Draft, "2026-07-30T04:30:00.000Z", "Ковалёв Д.С."],
       [OrderStatus.PendingApproval, "2026-07-30T05:45:00.000Z", "Ковалёв Д.С."],
@@ -622,11 +590,11 @@ const ORDER_ROWS: OrderRow[] = [
         OrderStatus.Rejected,
         "2026-07-31T04:00:00.000Z",
         "Пак С.В.",
-        "Превышена норма расхода по позиции: 24 упак против нормы 15 упак в месяц",
+        "Превышена норма расхода по позиции: 60 рулонов против нормы 20 в месяц",
       ],
     ],
     rejectionReason:
-      "Превышена месячная норма расхода по позиции «Сверло по металлу HSS-Co 10 мм»",
+      "Превышена месячная норма расхода по позиции «Шкурка шлифовальная на тканевой основе»",
   },
 
   // ————————— ТОО «Казахсервис»: путь без ERP-шагов —————————
@@ -634,10 +602,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-017",
     number: "ЗК-2026-000128",
     customerId: "usr-cust-svc",
-    lines: [
-      ["prd-tls-003", 6],
-      ["prd-tls-011", 10],
-    ],
+    lines: [["prd-instrumenty-i-019", 15]],
     history: [
       [OrderStatus.Draft, "2026-08-06T05:05:00.000Z", "Тлеубаев Е.К."],
       [OrderStatus.PendingApproval, "2026-08-06T06:20:00.000Z", "Тлеубаев Е.К."],
@@ -645,20 +610,17 @@ const ORDER_ROWS: OrderRow[] = [
         OrderStatus.Rejected,
         "2026-08-07T04:15:00.000Z",
         "Жумабеков Е.Т.",
-        "Месячный лимит участка по категории «Инструменты» уже превышен",
+        "Месячный лимит участка по категории «Инструменты и измерительная техника» уже превышен",
       ],
     ],
     rejectionReason:
-      "Месячный лимит участка по категории «Инструменты» исчерпан (116%)",
+      "Месячный лимит участка по инструментам исчерпан (116%)",
   },
   {
     id: "ord-018",
     number: "ЗК-2026-000133",
     customerId: "usr-cust-svc",
-    lines: [
-      ["prd-hhd-001", 40],
-      ["prd-hhd-004", 30],
-    ],
+    lines: [["prd-hozyaystvennye-ofisnye-018", 20]],
     history: [
       [OrderStatus.Draft, "2026-08-12T04:50:00.000Z", "Тлеубаев Е.К."],
       [OrderStatus.PendingApproval, "2026-08-12T06:05:00.000Z", "Тлеубаев Е.К."],
@@ -677,11 +639,7 @@ const ORDER_ROWS: OrderRow[] = [
     id: "ord-019",
     number: "ЗК-2026-000096",
     customerId: "usr-cust-svc",
-    lines: [
-      ["prd-off-001", 25],
-      ["prd-off-011", 20],
-      ["prd-off-014", 30],
-    ],
+    lines: [["prd-elektrotehnika-i-009", 150]],
     history: [
       [OrderStatus.Draft, "2026-07-03T05:15:00.000Z", "Тлеубаев Е.К."],
       [OrderStatus.PendingApproval, "2026-07-03T06:30:00.000Z", "Тлеубаев Е.К."],

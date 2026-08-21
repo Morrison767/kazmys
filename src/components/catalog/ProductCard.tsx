@@ -7,18 +7,28 @@ import { formatMoney } from "@/lib/utils";
 import type { Product } from "@/types";
 
 /**
- * Карточка товара каталога: плейсхолдер изображения, название, артикул,
- * цена по договору, остаток на РЕСХ доставки, степпер и «В корзину».
- * Фото номенклатуры в прототипе нет — вместо него иконка на фоне бренда.
+ * Карточка товара каталога: фото или плейсхолдер, название, путь по дереву
+ * категорий, артикул, цена по договору, остаток на РЕСХ доставки, степпер
+ * и «В корзину».
+ *
+ * Фото есть лишь у части позиций (public/products), у остальных — иконка:
+ * в источнике номенклатуры изображений нет, в проде они придут из каталога
+ * поставщика.
  */
 export function ProductCard({
   product,
+  categoryPath,
+  purchaseCategoryName,
   warehouseId,
   warehouseName,
   inCartQuantity,
   onAdd,
 }: {
   product: Product;
+  /** «Группа / Вид» — второй и третий уровни дерева. */
+  categoryPath?: string;
+  /** Раздел (категория закупа) — показывается бейджем. */
+  purchaseCategoryName?: string;
   /** РЕСХ цеха — остаток показывается именно по нему. */
   warehouseId: string | null;
   warehouseName: string | null;
@@ -35,11 +45,20 @@ export function ProductCard({
 
   return (
     <Card padded={false} className="flex flex-col overflow-hidden">
-      <div className="flex h-20 shrink-0 items-center justify-center border-b border-border bg-muted/40 sm:h-28">
-        <Package
-          className="h-8 w-8 text-muted-foreground sm:h-10 sm:w-10"
-          strokeWidth={1.5}
-        />
+      <div className="flex h-24 shrink-0 items-center justify-center overflow-hidden border-b border-border bg-muted/40 sm:h-32">
+        {product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <Package
+            className="h-8 w-8 text-muted-foreground sm:h-10 sm:w-10"
+            strokeWidth={1.5}
+          />
+        )}
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-3 p-3 sm:p-4">
@@ -50,6 +69,18 @@ export function ProductCard({
           >
             {product.name}
           </p>
+          {categoryPath && (
+            <p
+              className="mt-1 line-clamp-1 text-xs text-muted-foreground"
+              title={
+                purchaseCategoryName
+                  ? `${purchaseCategoryName} / ${categoryPath}`
+                  : categoryPath
+              }
+            >
+              {categoryPath}
+            </p>
+          )}
           <p className="mt-1 font-mono text-xs text-muted-foreground">
             {product.sku}
           </p>
@@ -72,6 +103,11 @@ export function ProductCard({
           ) : (
             <Badge tone={available < 20 ? "warning" : "success"} dot>
               {available} {product.unit} на {warehouseName ?? "РЕСХ"}
+            </Badge>
+          )}
+          {product.serviceLifeDays !== undefined && (
+            <Badge tone="neutral" outline>
+              срок службы {product.serviceLifeDays} дн.
             </Badge>
           )}
           {inCartQuantity > 0 && (

@@ -44,9 +44,15 @@ export const UNITS: UnitOfMeasure[] = [
   "пач",
 ];
 
-/** Категории, в которые можно добавлять позиции: активные подгруппы. */
+/**
+ * Категории, в которые можно добавлять позиции: активные листовые узлы
+ * дерева (виды третьего уровня). В раздел или группу позиция не кладётся —
+ * иначе каталог перестанет быть трёхуровневым.
+ */
 export function selectableCategories(categories: Category[]): Category[] {
-  return categories.filter((c) => c.parentId !== null && c.isActive);
+  return categories.filter(
+    (c) => c.isActive && !categories.some((child) => child.parentId === c.id)
+  );
 }
 
 export interface ProductFormErrors {
