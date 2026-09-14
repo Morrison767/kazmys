@@ -35,15 +35,21 @@ export function nextOrderNumber(existing: Order[], year: number): string {
 }
 
 function buildLines(orderId: string, lines: CartLine[], warehouseId: string): OrderLine[] {
-  return lines.map(({ product, quantity, lineTotal }, index) => ({
+  return lines.map(({ product, quantity, lineTotal, offer }, index) => ({
     id: `${orderId}-l${index + 1}`,
     productId: product.id,
     productName: product.name,
     sku: product.sku,
     unit: product.unit,
     quantity,
-    /** Цена фиксируется на момент оформления — цена рамочного договора. */
-    price: product.price,
+    /**
+     * Цена фиксируется на момент оформления: цена рамочного договора либо
+     * цена выбранного заказчиком предложения продавца.
+     */
+    price: offer?.price ?? product.price,
+    ...(offer
+      ? { sellerName: offer.sellerName, deliveryDays: offer.deliveryDays }
+      : {}),
     vatRate: product.vatRate,
     lineTotal,
     categoryId: rootCategoryId(product.categoryId),

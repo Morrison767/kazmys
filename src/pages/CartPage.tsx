@@ -7,6 +7,7 @@ import {
   Package,
   ShoppingCart,
   Trash2,
+  Truck,
 } from "lucide-react";
 
 import { CartCheckoutBar } from "@/components/catalog/CartCheckoutBar";
@@ -28,6 +29,7 @@ import { useCartLines } from "@/hooks/useCartLines";
 import { useCustomerScope } from "@/hooks/useCustomerScope";
 import { checkCartLimits } from "@/lib/cart-limits";
 import { createOrderFromCart } from "@/lib/create-order";
+import { deliveryDateLabel } from "@/lib/offers";
 import { formatMoney } from "@/lib/utils";
 import { rootCategoryId } from "@/mocks";
 import {
@@ -203,11 +205,14 @@ export default function CartPage() {
                     </span>
                   </li>
                 ) : null,
-                ...group.items.map(({ product, quantity, lineTotal }) => {
+                ...group.items.map(({ product, quantity, lineTotal, offer }) => {
                 const stock =
                   product.stock.find((s) => s.warehouseId === warehouse?.id)
                     ?.quantity ?? 0;
-                const overStock = quantity > stock;
+                // У позиции с выбранным внешним продавцом наличие считается
+                // по его остатку: товар идёт мимо РЕСХ.
+                const available = offer ? offer.availableQuantity : stock;
+                const overStock = quantity > available;
 
                 return (
                   <li
@@ -228,12 +233,23 @@ export default function CartPage() {
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         <span className="font-mono">{product.sku}</span> ·{" "}
                         {categoryName(rootCategoryId(product.categoryId))} ·{" "}
-                        {formatMoney(product.price)} за {product.unit}
+                        {formatMoney(offer?.price ?? product.price)} за{" "}
+                        {product.unit}
                       </p>
+                      {offer && (
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                          <Truck className="h-3.5 w-3.5" />
+                          {offer.sellerName} · привезут{" "}
+                          {deliveryDateLabel(offer.deliveryDays)}
+                        </p>
+                      )}
                       {overStock && (
                         <Badge tone="warning" className="mt-1.5">
-                          На {warehouse?.name} свободно {stock} {product.unit} —
-                          поставка займёт больше времени
+                          {offer
+                            ? `У продавца ${offer.sellerName} свободно ${available} ${product.unit} — срок поставки увеличится`
+                            : product.externalSource
+                              ? `У поставщика свободно ${available} ${product.unit} — поставка займёт больше времени`
+                              : `На ${warehouse?.name} свободно ${available} ${product.unit} — поставка займёт больше времени`}
                         </Badge>
                       )}
                     </div>

@@ -30,6 +30,18 @@ export function OrderLinesTable({
             <span className="font-mono">{line.sku}</span>
             {categoryName ? ` · ${categoryName(line.categoryId)}` : ""}
           </p>
+          {/*
+            Позиция куплена не у поставщика категории — согласующий должен
+            видеть продавца и обещанный срок прямо в составе заказа.
+          */}
+          {line.sellerName && (
+            <p className="mt-0.5 text-xs text-warning-foreground">
+              продавец: {line.sellerName}
+              {line.deliveryDays !== undefined
+                ? ` · срок ${line.deliveryDays} дн.`
+                : ""}
+            </p>
+          )}
         </div>
       ),
     },
@@ -82,6 +94,11 @@ export function OrderLinesTable({
               <span className="font-mono">{line.sku}</span>
               {categoryName ? ` · ${categoryName(line.categoryId)}` : ""}
             </p>
+            {line.sellerName && (
+              <p className="text-xs text-warning-foreground">
+                продавец: {line.sellerName}
+              </p>
+            )}
             <div className="mt-1 flex items-baseline justify-between gap-3">
               <span className="text-xs tabular-nums text-muted-foreground">
                 {line.quantity} {line.unit} × {formatMoney(line.price)}

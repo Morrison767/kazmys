@@ -1,5 +1,5 @@
 import { rootCategoryId } from "@/mocks";
-import type { Limit, Product } from "@/types";
+import type { Limit, Product, ProductOffer } from "@/types";
 
 /**
  * Проверка корзины по лимитам цеха (шаг 2 пути заказа).
@@ -19,8 +19,14 @@ export type LimitVerdict =
 export interface CartLine {
   product: Product;
   quantity: number;
-  /** quantity × цена договора, ₸ без НДС. */
+  /** quantity × цена выбранного предложения, ₸ без НДС. */
   lineTotal: number;
+  /**
+   * Выбранный продавец. Пусто — заказ по рамочному договору категории.
+   * На проверку лимитов влияет только через lineTotal: лимит считается по
+   * сумме закупа, независимо от того, у кого куплено.
+   */
+  offer?: ProductOffer;
 }
 
 /** Результат проверки по одной категории закупа. */

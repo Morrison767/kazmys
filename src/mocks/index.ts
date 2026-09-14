@@ -51,6 +51,14 @@ export {
   stockAt,
 } from "./products";
 
+// Предложения продавцов по позициям
+export {
+  PRODUCT_OFFERS,
+  offersOfProduct,
+  offerById,
+  contractOfferOf,
+} from "./offers";
+
 // Пользователи
 export {
   USERS,

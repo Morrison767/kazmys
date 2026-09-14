@@ -345,6 +345,19 @@ const WAREHOUSES = [
   ["wh-chu", "reg-chu"],
 ];
 
+/**
+ * Нормативный срок поставки по рамочному договору категории, дней.
+ * Те же значения, что у поставщиков в src/mocks/suppliers.ts.
+ */
+const CONTRACT_DELIVERY_DAYS = {
+  "cat-hozyaystvennye-ofisnye": 7,
+  "cat-specodezhda-i": 12,
+  "cat-instrumenty-i": 10,
+  "cat-rashodnye-materialy": 8,
+  "cat-metizy-i": 6,
+  "cat-elektrotehnika-i": 14,
+};
+
 /** Названия РЕСХ — для описания позиции. */
 const WAREHOUSE_NAMES = {
   "wh-krg": "РЕСХ Караганда",
@@ -370,6 +383,98 @@ function stockOf(productId, price) {
     const quantity = pick(`${productId}:${warehouseId}`, min, max, step);
     return { warehouseId, regionId, quantity };
   });
+}
+
+/* ————————————————— Предложения продавцов ————————————————— */
+
+/**
+ * Профили внешних маркетплейсов ТД: рейтинг, отзывы и типичный срок поставки.
+ * TSSP возит быстрее всех, Lamed — медленнее: список получается осмысленным,
+ * а не набором случайных чисел.
+ */
+const SELLER_PROFILES = {
+  Garwin: { rating: [47, 50], reviews: [60, 420], days: [2, 6] },
+  Lamed: { rating: [46, 49], reviews: [40, 260], days: [4, 9] },
+  TSSP: { rating: [47, 50], reviews: [80, 540], days: [1, 4] },
+};
+
+/**
+ * Способы поставки внешнего продавца. В строку данных пишется индекс,
+ * сама подпись живёт в src/mocks/offers.ts — 482 повтора строки в бандле
+ * прототипу ни к чему.
+ */
+const DELIVERY_MODES = [
+  "Доставка до предприятия",
+  "Самовывоз со склада продавца",
+  "Доставка транспортом продавца",
+];
+
+/**
+ * Предложения продавцов по позиции: у кого есть, почём и когда привезёт.
+ *
+ * Договорное предложение всегда первое: цена каталога, поставка на РЕСХ,
+ * нормативный срок из договора категории, доставка входит в цену. Дальше —
+ * внешние продавцы: цена гуляет вокруг договорной (−6…+14 %), срок и способ
+ * поставки свои. У позиции с указанным источником этот продавец идёт первым
+ * среди внешних — карточка и список предложений не расходятся.
+ */
+function buildOffers({ productId, price, stock, externalSource, contractDays }) {
+  const offers = [
+    {
+      productId,
+      price,
+      availableQuantity: stock.reduce((sum, s) => sum + s.quantity, 0),
+      deliveryDays: contractDays,
+      deliveryCost: 0,
+      rating: pick(`rate:${productId}`, 47, 50) / 10,
+      reviews: pick(`rev:${productId}`, 12, 180),
+    },
+  ];
+
+  const names = Object.keys(SELLER_PROFILES);
+  const start = externalSource
+    ? names.indexOf(externalSource)
+    : hash(`seller:${productId}`) % names.length;
+  // У каждой позиции есть с чем сравнить: минимум одно внешнее предложение.
+  const count = externalSource
+    ? 2 + (hash(`extra:${productId}`) % 2)
+    : 1 + (hash(`extra:${productId}`) % 3);
+
+  for (let i = 0; i < count; i += 1) {
+    const name = names[(start + i) % names.length];
+    const profile = SELLER_PROFILES[name];
+    const deltaPercent = pick(`delta:${productId}:${name}`, -6, 14);
+    const offerPrice = Math.max(
+      10,
+      Math.round((price * (100 + deltaPercent)) / 100 / 10) * 10
+    );
+    const freeDelivery = hash(`free:${productId}:${name}`) % 3 === 0;
+    offers.push({
+      productId,
+      sellerName: name,
+      price: offerPrice,
+      availableQuantity: pick(`qty:${productId}:${name}`, 2, 240),
+      deliveryDays: pick(
+        `days:${productId}:${name}`,
+        profile.days[0],
+        profile.days[1]
+      ),
+      deliveryMode: hash(`mode:${productId}:${name}`) % DELIVERY_MODES.length,
+      deliveryCost: freeDelivery
+        ? 0
+        : pick(`dc:${productId}:${name}`, 900, 4500, 100),
+      rating:
+        pick(`rate:${productId}:${name}`, profile.rating[0], profile.rating[1]) /
+        10,
+      reviews: pick(
+        `rev:${productId}:${name}`,
+        profile.reviews[0],
+        profile.reviews[1]
+      ),
+    });
+  }
+
+  return offers;
 }
 
 /* ——————————————————————— Сборка данных ——————————————————————— */
@@ -398,6 +503,7 @@ const FUTURE_ROOTS = [
 
 const categories = [];
 const products = [];
+const offers = [];
 const usedIds = new Set();
 
 function uniqueId(base) {
@@ -463,6 +569,16 @@ for (const root of selection.roots) {
         const warehouseName =
           WAREHOUSE_NAMES[stock[0].warehouseId] ?? "РЕСХ региона";
         const externalSource = externalSourceOf(id);
+
+        offers.push(
+          ...buildOffers({
+            productId: id,
+            price,
+            stock,
+            externalSource,
+            contractDays: CONTRACT_DELIVERY_DAYS[rootId] ?? 10,
+          })
+        );
 
         products.push({
           id,
@@ -693,8 +809,110 @@ export function stockAt(productId: string, warehouseId: string): number {
 }
 `;
 
+const offersFile = `import type { ProductOffer } from "@/types";
+
+import { rootCategoryId } from "@/mocks/categories";
+import { warehouseById } from "@/mocks/regions";
+import { supplierOfCategory } from "@/mocks/suppliers";
+import { PRODUCTS } from "@/mocks/products";
+
+/**
+ * Предложения продавцов по позициям каталога: у кого есть, почём и когда
+ * привезёт. Первое предложение каждой позиции — договорное (поставщик
+ * категории по рамочному договору), остальные — внешние маркетплейсы ТД
+ * (Garwin / Lamed / TSSP).
+ *
+ * Название договорного продавца не хранится в строке, а подставляется из
+ * mocks/suppliers.ts: модель «один поставщик на категорию» не может
+ * разойтись с данными, даже если поставщика категории поменяют.
+ *
+ * ФАЙЛ СГЕНЕРИРОВАН: scripts/generate-catalog.mjs.
+ */
+
+/**
+ * Строка данных: всё, что выводится (идентификатор, продавец по договору,
+ * подпись способа поставки), в ней не хранится.
+ */
+interface OfferRow {
+  productId: string;
+  /** Внешний продавец; пусто — предложение по рамочному договору. */
+  sellerName?: string;
+  price: number;
+  availableQuantity: number;
+  deliveryDays: number;
+  /** Индекс в DELIVERY_MODES; у договорного предложения отсутствует. */
+  deliveryMode?: number;
+  deliveryCost: number;
+  rating: number;
+  reviews: number;
+}
+
+/** Способы поставки внешних продавцов. */
+const DELIVERY_MODES = [
+  "Доставка до предприятия",
+  "Самовывоз со склада продавца",
+  "Доставка транспортом продавца",
+];
+
+const OFFER_ROWS: OfferRow[] = ${ts(offers)};
+
+const PRODUCT_BY_ID = new Map(PRODUCTS.map((p) => [p.id, p]));
+
+export const PRODUCT_OFFERS: ProductOffer[] = OFFER_ROWS.map((row) => {
+  const { deliveryMode, ...rest } = row;
+  const product = PRODUCT_BY_ID.get(row.productId);
+
+  if (row.sellerName) {
+    return {
+      ...rest,
+      sellerName: row.sellerName,
+      isContract: false,
+      externalSource: row.sellerName,
+      id: \`\${row.productId}-o-\${row.sellerName.toLowerCase()}\`,
+      deliveryLabel: DELIVERY_MODES[deliveryMode ?? 0],
+    };
+  }
+
+  // Договорное предложение: продавец — поставщик категории, склад — РЕСХ
+  // позиции. Оба выводятся из каталога, чтобы данные не разошлись.
+  const supplier = product
+    ? supplierOfCategory(rootCategoryId(product.categoryId))
+    : undefined;
+  const warehouse = product ? warehouseById(product.primaryWarehouseId) : undefined;
+  return {
+    ...rest,
+    sellerName: supplier?.name ?? "Поставщик категории",
+    isContract: true,
+    id: \`\${row.productId}-o-contract\`,
+    deliveryLabel: \`Поставка на \${warehouse?.name ?? "РЕСХ региона"}\`,
+  };
+});
+
+const BY_PRODUCT = new Map<string, ProductOffer[]>();
+for (const offer of PRODUCT_OFFERS) {
+  const list = BY_PRODUCT.get(offer.productId);
+  if (list) list.push(offer);
+  else BY_PRODUCT.set(offer.productId, [offer]);
+}
+
+/** Предложения по позиции в исходном порядке: договорное первым. */
+export function offersOfProduct(productId: string): ProductOffer[] {
+  return BY_PRODUCT.get(productId) ?? [];
+}
+
+export function offerById(offerId: string): ProductOffer | undefined {
+  return PRODUCT_OFFERS.find((o) => o.id === offerId);
+}
+
+/** Договорное предложение позиции — вариант по умолчанию. */
+export function contractOfferOf(productId: string): ProductOffer | undefined {
+  return offersOfProduct(productId).find((o) => o.isContract);
+}
+`;
+
 writeFileSync("src/mocks/categories.ts", categoriesFile, "utf8");
 writeFileSync("src/mocks/products.ts", productsFile, "utf8");
+writeFileSync("src/mocks/offers.ts", offersFile, "utf8");
 
 const byRoot = new Map();
 for (const product of products) {
@@ -706,4 +924,7 @@ console.log(
   `Категорий: ${categories.length} (разделов ${categories.filter((c) => !c.parentId).length}), позиций: ${products.length}`
 );
 for (const [root, count] of byRoot) console.log(`  ${root}: ${count}`);
-console.log("Записано: src/mocks/categories.ts, src/mocks/products.ts");
+console.log(`Предложений продавцов: ${offers.length}`);
+console.log(
+  "Записано: src/mocks/categories.ts, src/mocks/products.ts, src/mocks/offers.ts"
+);

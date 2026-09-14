@@ -3,9 +3,9 @@ import { create } from "zustand";
 import type { CartItem } from "@/types";
 
 /**
- * Корзина заказчика (шаг 1 пути заказа). Хранит только productId + количество;
- * цены и остатки берутся из каталога при отображении и фиксируются в заказе
- * на шаге «Оформление».
+ * Корзина заказчика (шаг 1 пути заказа). Хранит productId, количество и выбор
+ * предложения продавца; цены и остатки берутся из каталога при отображении и
+ * фиксируются в заказе на шаге «Оформление».
  */
 interface CartState {
   items: CartItem[];
@@ -14,7 +14,9 @@ interface CartState {
   /** Цех-заказчик; по умолчанию — цех текущего пользователя. */
   workshopId: string | null;
   comment: string;
-  add: (productId: string, quantity?: number) => void;
+  add: (productId: string, quantity?: number, offerId?: string) => void;
+  /** Сменить продавца по позиции (выбор на странице товара). */
+  setOffer: (productId: string, offerId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   remove: (productId: string) => void;
   clear: () => void;
@@ -34,14 +36,21 @@ export const useCartStore = create<CartState>((set, get) => ({
   workshopId: null,
   comment: "",
 
-  add: (productId, quantity = 1) =>
+  add: (productId, quantity = 1, offerId) =>
     set((state) => {
       const existing = state.items.find((i) => i.productId === productId);
       if (existing) {
         return {
           items: state.items.map((i) =>
             i.productId === productId
-              ? { ...i, quantity: i.quantity + quantity }
+              ? {
+                  ...i,
+                  quantity: i.quantity + quantity,
+                  // Повторное добавление с явно выбранным продавцом
+                  // переносит строку к нему: в корзине одна позиция —
+                  // один продавец.
+                  ...(offerId ? { offerId } : {}),
+                }
               : i
           ),
         };
@@ -49,10 +58,22 @@ export const useCartStore = create<CartState>((set, get) => ({
       return {
         items: [
           ...state.items,
-          { productId, quantity, addedAt: new Date().toISOString() },
+          {
+            productId,
+            quantity,
+            ...(offerId ? { offerId } : {}),
+            addedAt: new Date().toISOString(),
+          },
         ],
       };
     }),
+
+  setOffer: (productId, offerId) =>
+    set((state) => ({
+      items: state.items.map((i) =>
+        i.productId === productId ? { ...i, offerId } : i
+      ),
+    })),
 
   setQuantity: (productId, quantity) =>
     set((state) => ({

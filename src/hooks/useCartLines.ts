@@ -1,12 +1,16 @@
 import { useMemo } from "react";
 
 import type { CartLine } from "@/lib/cart-limits";
+import { offerById } from "@/mocks";
 import { useCartStore, useCatalogStore } from "@/store";
 
 /**
- * Позиции корзины, разложенные до товаров и сумм. Корзина хранит только
- * productId и количество, поэтому цена и остатки подтягиваются из каталога
- * при каждом рендере — как и будет в проде при синхронизации цен из ERP.
+ * Позиции корзины, разложенные до товаров и сумм. Корзина хранит productId,
+ * количество и выбор продавца, поэтому цена и остатки подтягиваются из
+ * каталога при каждом рендере — как и будет в проде при синхронизации из ERP.
+ *
+ * Сумма строки считается по цене выбранного предложения; стоимость доставки
+ * в неё не входит — лимит цеха считается по стоимости самих товаров.
  */
 export function useCartLines(): {
   lines: CartLine[];
@@ -22,11 +26,14 @@ export function useCartLines(): {
     const lines: CartLine[] = items.flatMap((item) => {
       const product = products.find((p) => p.id === item.productId);
       if (!product) return [];
+      const offer = item.offerId ? offerById(item.offerId) : undefined;
+      const price = offer?.price ?? product.price;
       return [
         {
           product,
           quantity: item.quantity,
-          lineTotal: product.price * item.quantity,
+          lineTotal: price * item.quantity,
+          ...(offer && !offer.isContract ? { offer } : {}),
         },
       ];
     });

@@ -34,5 +34,11 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
   },
-  server: { port: 5173, open: false },
+  server: {
+    // host: true — сервер слушает все интерфейсы, а не только localhost:
+    // прототип открывается с других машин в сети (демо с ноутбука заказчика).
+    host: true,
+    port: 5173,
+    open: false,
+  },
 }));

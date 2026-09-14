@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Package, ShoppingCart } from "lucide-react";
+import { Check, Package, ShoppingCart, Store } from "lucide-react";
 
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { Badge, Button, Card } from "@/components/ui";
+import { offersCountLabel } from "@/lib/offers";
 import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatMoney } from "@/lib/utils";
+import { offersOfProduct } from "@/mocks";
 import type { Product } from "@/types";
 
 /**
@@ -47,6 +49,13 @@ export function ProductCard({
     : undefined;
   const available = stock?.quantity ?? 0;
   const isOutOfStock = available <= 0;
+
+  // Сколько продавцов везут позицию и по какой минимальной цене —
+  // сам выбор делается на странице товара.
+  const offers = offersOfProduct(product.id);
+  const minOfferPrice = offers.length
+    ? Math.min(...offers.map((o) => o.price))
+    : product.price;
 
   /**
    * Клик по карточке ведёт на страницу товара, но степпер и «В корзину»
@@ -129,6 +138,17 @@ export function ProductCard({
             за 1 {product.unit} · без НДС
           </span>
         </div>
+
+        {/*
+          Подсказка о выборе продавца: сам выбор живёт на странице товара,
+          в сетке показывается только их число и минимальная цена.
+        */}
+        {offers.length > 1 && (
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Store className="h-3.5 w-3.5" />
+            {offersCountLabel(offers.length)} · от {formatMoney(minOfferPrice)}
+          </p>
+        )}
       </div>
       </Info>
 

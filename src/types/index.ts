@@ -12,6 +12,7 @@ export type {
   Supplier,
   ContractStatus,
   Product,
+  ProductOffer,
   StockBalance,
   UnitOfMeasure,
 } from "./catalog";

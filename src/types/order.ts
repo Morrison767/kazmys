@@ -43,6 +43,13 @@ export interface OrderLine {
   supplierId: string;
   /** РЕСХ отгрузки позиции. */
   warehouseId: string;
+  /**
+   * Продавец выбранного предложения, если заказчик выбрал не договорное:
+   * снимок названия на момент оформления. Пусто — поставщик по договору.
+   */
+  sellerName?: string;
+  /** Обещанный продавцом срок поставки, дней от оформления. */
+  deliveryDays?: number;
   /** Фактически получено на шаге 7 (может отличаться от заказанного). */
   receivedQuantity?: number;
 }
@@ -134,6 +141,11 @@ export interface Order {
 export interface CartItem {
   productId: string;
   quantity: number;
+  /**
+   * Выбранное предложение продавца (ProductOffer.id). Пусто — заказ по
+   * рамочному договору категории, вариант по умолчанию.
+   */
+  offerId?: string;
   /** Момент добавления (ISO) — для сортировки корзины. */
   addedAt: string;
 }

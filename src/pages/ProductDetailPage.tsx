@@ -9,6 +9,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 
+import { OfferList } from "@/components/catalog/OfferList";
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { PageHeader } from "@/components/layout/PageHeader";
 import {
@@ -20,9 +21,10 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { useCustomerScope } from "@/hooks/useCustomerScope";
+import { deliveryCostLabel, deliveryDateLabel } from "@/lib/offers";
 import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatDate, formatMoney } from "@/lib/utils";
-import { categoryPath, rootCategoryId } from "@/mocks";
+import { categoryPath, offersOfProduct, rootCategoryId } from "@/mocks";
 import { useCartStore, useCatalogStore, useLimitsStore } from "@/store";
 
 /**
@@ -48,6 +50,8 @@ export default function ProductDetailPage() {
   const inCart = useCartStore((s) => s.items.find((i) => i.productId === id));
 
   const [quantity, setQuantity] = useState(1);
+  /** Выбранный продавец; пусто — предложение по рамочному договору. */
+  const [pickedOfferId, setPickedOfferId] = useState<string>();
 
   const product = availableProducts.find((p) => p.id === id);
   const backTo = `/catalog${searchParams.toString() ? `?${searchParams}` : ""}`;
@@ -95,7 +99,31 @@ export default function ProductDetailPage() {
   const regionName = (regionId: string) =>
     regions.find((r) => r.id === regionId)?.name ?? regionId;
 
-  const vat = Math.round((product.price * product.vatRate) / 100);
+  /*
+    Предложения продавцов. У договорного остаток и склад берутся из области
+    видимости заказчика (его РЕСХ), а не из строки данных: иначе список
+    предложений расходился бы с блоком «Остатки на РЕСХ» на этой же странице.
+  */
+  const offers = offersOfProduct(product.id).map((offer) =>
+    offer.isContract
+      ? {
+          ...offer,
+          availableQuantity: available,
+          deliveryLabel: `Поставка на ${warehouse?.name ?? "РЕСХ региона"}`,
+        }
+      : offer
+  );
+  const selectedOffer =
+    offers.find((o) => o.id === pickedOfferId) ??
+    offers.find((o) => o.isContract) ??
+    offers[0];
+
+  /** Доступное количество у выбранного продавца — им ограничен степпер. */
+  const offerAvailable = selectedOffer?.availableQuantity ?? available;
+  const offerPrice = selectedOffer?.price ?? product.price;
+  const canOrder = offerAvailable > 0;
+
+  const vat = Math.round((offerPrice * product.vatRate) / 100);
 
   return (
     <div className="flex flex-col gap-6">
@@ -163,14 +191,32 @@ export default function ProductDetailPage() {
 
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <span className="text-2xl font-bold tracking-tight text-foreground">
-                  {formatMoney(product.price)}
+                  {formatMoney(offerPrice)}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   за 1 {product.unit} без НДС · с НДС{" "}
-                  {formatMoney(product.price + vat)}
+                  {formatMoney(offerPrice + vat)}
                 </span>
+                {selectedOffer && !selectedOffer.isContract && (
+                  <Badge tone="warning">цена продавца {selectedOffer.sellerName}</Badge>
+                )}
               </div>
             </div>
+          </Card>
+
+          {/* Где заказать */}
+          <Card className="flex flex-col gap-4">
+            <CardHeader
+              title="Где заказать"
+              description="Предложения продавцов по позиции: наличие, срок поставки и цена. Договор категории — основной канал; закупка у внешнего продавца оформляется через согласование ТД."
+            />
+            <OfferList
+              offers={offers}
+              quantity={quantity}
+              unit={product.unit}
+              selectedOfferId={selectedOffer?.id}
+              onSelect={setPickedOfferId}
+            />
           </Card>
 
           {/* Характеристики */}
@@ -244,29 +290,45 @@ export default function ProductDetailPage() {
             <CardHeader
               title="Заказать"
               description={
-                product.externalSource
-                  ? `Поставка от ${product.externalSource} напрямую`
-                  : `Доставка на ${warehouse?.name ?? "РЕСХ региона"}`
+                selectedOffer
+                  ? `Продавец: ${selectedOffer.sellerName}`
+                  : "Нет доступных предложений"
               }
             />
 
-            <Badge
-              tone={isOutOfStock ? "danger" : available < 20 ? "warning" : "success"}
-              dot
-            >
-              {stockLabel(product, available, warehouse?.name ?? null)}
-              {isOutOfStock ? " — поставка под заказ" : ""}
-            </Badge>
+            {selectedOffer && !selectedOffer.isContract ? (
+              <Badge tone={canOrder ? "success" : "danger"} dot>
+                {canOrder
+                  ? `Доступно у продавца: ${offerAvailable} ${product.unit}`
+                  : "Нет в наличии у продавца"}
+              </Badge>
+            ) : (
+              <Badge
+                tone={isOutOfStock ? "danger" : available < 20 ? "warning" : "success"}
+                dot
+              >
+                {stockLabel(product, available, warehouse?.name ?? null)}
+                {isOutOfStock ? " — поставка под заказ" : ""}
+              </Badge>
+            )}
+
+            {selectedOffer && (
+              <p className="text-xs text-muted-foreground">
+                {selectedOffer.deliveryLabel} · привезут{" "}
+                {deliveryDateLabel(selectedOffer.deliveryDays)} ·{" "}
+                {deliveryCostLabel(selectedOffer.deliveryCost)}
+              </p>
+            )}
 
             <div className="flex flex-col gap-2">
               <QuantityStepper
                 value={quantity}
                 onChange={setQuantity}
-                max={isOutOfStock ? undefined : available}
+                max={canOrder ? offerAvailable : undefined}
                 unit={product.unit}
               />
               <p className="text-xs text-muted-foreground">
-                Сумма позиции: {formatMoney(product.price * quantity)} без НДС
+                Сумма позиции: {formatMoney(offerPrice * quantity)} без НДС
               </p>
             </div>
 
@@ -274,8 +336,8 @@ export default function ProductDetailPage() {
               size="lg"
               fullWidth
               icon={ShoppingCart}
-              disabled={isOutOfStock}
-              onClick={() => addToCart(product.id, quantity)}
+              disabled={!canOrder}
+              onClick={() => addToCart(product.id, quantity, selectedOffer?.id)}
             >
               В корзину
             </Button>
