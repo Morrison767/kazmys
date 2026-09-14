@@ -4,7 +4,8 @@ import { Check, Package, ShoppingCart, Store } from "lucide-react";
 
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { Badge, Button, Card } from "@/components/ui";
-import { offersCountLabel } from "@/lib/offers";
+import { OfferPicker } from "@/components/catalog/OfferPicker";
+import { offersCountLabel, withCustomerWarehouse } from "@/lib/offers";
 import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatMoney } from "@/lib/utils";
 import { offersOfProduct } from "@/mocks";
@@ -40,9 +41,11 @@ export function ProductCard({
   warehouseId: string | null;
   warehouseName: string | null;
   inCartQuantity: number;
-  onAdd: (quantity: number) => void;
+  /** Добавление в корзину с выбранным продавцом. */
+  onAdd: (quantity: number, offerId?: string) => void;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const stock = warehouseId
     ? product.stock.find((s) => s.warehouseId === warehouseId)
@@ -50,12 +53,31 @@ export function ProductCard({
   const available = stock?.quantity ?? 0;
   const isOutOfStock = available <= 0;
 
-  // Сколько продавцов везут позицию и по какой минимальной цене —
-  // сам выбор делается на странице товара.
-  const offers = offersOfProduct(product.id);
+  // Предложения продавцов: в сетке видно их число и минимальную цену,
+  // сам выбор — в модальном окне по кнопке «В корзину».
+  const offers = withCustomerWarehouse(
+    offersOfProduct(product.id),
+    available,
+    warehouseName
+  );
   const minOfferPrice = offers.length
     ? Math.min(...offers.map((o) => o.price))
     : product.price;
+
+  /**
+   * Выбирать не из чего — добавляем сразу: лишнее окно на каждой позиции
+   * раздражало бы там, где продавец всего один.
+   */
+  const handleAdd = () => {
+    if (offers.length > 1) setPickerOpen(true);
+    else onAdd(quantity, offers[0]?.id);
+  };
+
+  /*
+    Пустой РЕСХ больше не закрывает заказ: позицию может везти внешний
+    продавец — именно для этого в окне и показывается, у кого она есть.
+  */
+  const hasAnyOffer = offers.some((o) => o.availableQuantity > 0);
 
   /**
    * Клик по карточке ведёт на страницу товара, но степпер и «В корзину»
@@ -188,14 +210,27 @@ export function ProductCard({
           <Button
             size="sm"
             icon={ShoppingCart}
-            disabled={isOutOfStock}
-            onClick={() => onAdd(quantity)}
+            disabled={!hasAnyOffer}
+            onClick={handleAdd}
             className="h-9 w-full sm:flex-1"
           >
             В корзину
           </Button>
         </div>
       </div>
+
+      {pickerOpen && (
+        <OfferPicker
+          product={product}
+          offers={offers}
+          initialQuantity={quantity}
+          onClose={() => setPickerOpen(false)}
+          onConfirm={(offerId, pickedQuantity) => {
+            onAdd(pickedQuantity, offerId);
+            setPickerOpen(false);
+          }}
+        />
+      )}
     </Card>
   );
 }

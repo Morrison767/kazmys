@@ -12,6 +12,7 @@ import {
 
 import { CartCheckoutBar } from "@/components/catalog/CartCheckoutBar";
 import { LimitVerdictPanel } from "@/components/catalog/LimitVerdictPanel";
+import { OfferPicker } from "@/components/catalog/OfferPicker";
 import { QuantityStepper } from "@/components/catalog/QuantityStepper";
 import { PageHeader } from "@/components/layout/PageHeader";
 import {
@@ -29,9 +30,9 @@ import { useCartLines } from "@/hooks/useCartLines";
 import { useCustomerScope } from "@/hooks/useCustomerScope";
 import { checkCartLimits } from "@/lib/cart-limits";
 import { createOrderFromCart } from "@/lib/create-order";
-import { deliveryDateLabel } from "@/lib/offers";
+import { deliveryDateLabel, withCustomerWarehouse } from "@/lib/offers";
 import { formatMoney } from "@/lib/utils";
-import { rootCategoryId } from "@/mocks";
+import { offersOfProduct, rootCategoryId } from "@/mocks";
 import {
   useCartStore,
   useCatalogStore,
@@ -52,6 +53,7 @@ export default function CartPage() {
   const addOrder = useOrdersStore((s) => s.addOrder);
 
   const setQuantity = useCartStore((s) => s.setQuantity);
+  const setOffer = useCartStore((s) => s.setOffer);
   const removeItem = useCartStore((s) => s.remove);
   const clearCart = useCartStore((s) => s.clear);
   const comment = useCartStore((s) => s.comment);
@@ -61,9 +63,13 @@ export default function CartPage() {
     useCartLines();
 
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null);
+  /** Позиция, для которой открыт выбор продавца. */
+  const [pickerProductId, setPickerProductId] = useState<string | null>(null);
 
   const categoryName = (categoryId: string) =>
     categories.find((c) => c.id === categoryId)?.name ?? categoryId;
+
+  const pickerLine = lines.find((l) => l.product.id === pickerProductId);
 
   // Проверка лимитов пересчитывается на каждое изменение корзины —
   // «в реальном времени», без отдельной кнопки проверки.
@@ -236,13 +242,19 @@ export default function CartPage() {
                         {formatMoney(offer?.price ?? product.price)} за{" "}
                         {product.unit}
                       </p>
-                      {offer && (
-                        <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                          <Truck className="h-3.5 w-3.5" />
-                          {offer.sellerName} · привезут{" "}
-                          {deliveryDateLabel(offer.deliveryDays)}
-                        </p>
-                      )}
+                      <p className="mt-0.5 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                        <Truck className="h-3.5 w-3.5" />
+                        {offer
+                          ? `${offer.sellerName} · привезут ${deliveryDateLabel(offer.deliveryDays)}`
+                          : "Поставщик категории по договору"}
+                        <button
+                          type="button"
+                          onClick={() => setPickerProductId(product.id)}
+                          className="font-semibold text-primary transition-colors hover:underline"
+                        >
+                          сменить
+                        </button>
+                      </p>
                       {overStock && (
                         <Badge tone="warning" className="mt-1.5">
                           {offer
@@ -276,6 +288,32 @@ export default function CartPage() {
               }),
               ])}
             </ul>
+
+            {/*
+              Выбор продавца прямо из корзины: то же окно, что и по кнопке
+              «В корзину» в каталоге, только подтверждение меняет строку.
+            */}
+            {pickerLine && (
+              <OfferPicker
+                product={pickerLine.product}
+                offers={withCustomerWarehouse(
+                  offersOfProduct(pickerLine.product.id),
+                  pickerLine.product.stock.find(
+                    (st) => st.warehouseId === warehouse?.id
+                  )?.quantity ?? 0,
+                  warehouse?.name ?? null
+                )}
+                initialQuantity={pickerLine.quantity}
+                initialOfferId={pickerLine.offer?.id}
+                confirmLabel="Сохранить"
+                onClose={() => setPickerProductId(null)}
+                onConfirm={(offerId, quantity) => {
+                  setOffer(pickerLine.product.id, offerId);
+                  setQuantity(pickerLine.product.id, quantity);
+                  setPickerProductId(null);
+                }}
+              />
+            )}
 
             <div className="flex flex-col gap-1 border-t border-border bg-muted/30 px-5 py-4 text-sm">
               <Row label="Сумма без НДС" value={formatMoney(totalAmount)} />

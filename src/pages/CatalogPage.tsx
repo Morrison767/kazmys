@@ -336,7 +336,9 @@ export default function CatalogPage() {
                     cartItems.find((i) => i.productId === product.id)
                       ?.quantity ?? 0
                   }
-                  onAdd={(quantity) => addToCart(product.id, quantity)}
+                  onAdd={(quantity, offerId) =>
+                    addToCart(product.id, quantity, offerId)
+                  }
                 />
               ))}
             </div>

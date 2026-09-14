@@ -43,6 +43,27 @@ export interface OfferView {
   isEnough: boolean;
 }
 
+/**
+ * Договорное предложение под область видимости заказчика: остаток и склад
+ * берутся из его РЕСХ, а не из строки данных (там сумма по всем складам).
+ * Иначе список предложений расходился бы с остатком в карточке товара.
+ */
+export function withCustomerWarehouse(
+  offers: ProductOffer[],
+  available: number,
+  warehouseName: string | null
+): ProductOffer[] {
+  return offers.map((offer) =>
+    offer.isContract
+      ? {
+          ...offer,
+          availableQuantity: available,
+          deliveryLabel: `Поставка на ${warehouseName ?? "РЕСХ региона"}`,
+        }
+      : offer
+  );
+}
+
 /** Отклонение цены предложения от договорной, % (округление до целых). */
 export function priceDeltaPercent(
   price: number,

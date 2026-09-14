@@ -21,7 +21,11 @@ import {
   EmptyState,
 } from "@/components/ui";
 import { useCustomerScope } from "@/hooks/useCustomerScope";
-import { deliveryCostLabel, deliveryDateLabel } from "@/lib/offers";
+import {
+  deliveryCostLabel,
+  deliveryDateLabel,
+  withCustomerWarehouse,
+} from "@/lib/offers";
 import { stockLabel } from "@/lib/stock-label";
 import { assetUrl, formatDate, formatMoney } from "@/lib/utils";
 import { categoryPath, offersOfProduct, rootCategoryId } from "@/mocks";
@@ -99,19 +103,11 @@ export default function ProductDetailPage() {
   const regionName = (regionId: string) =>
     regions.find((r) => r.id === regionId)?.name ?? regionId;
 
-  /*
-    Предложения продавцов. У договорного остаток и склад берутся из области
-    видимости заказчика (его РЕСХ), а не из строки данных: иначе список
-    предложений расходился бы с блоком «Остатки на РЕСХ» на этой же странице.
-  */
-  const offers = offersOfProduct(product.id).map((offer) =>
-    offer.isContract
-      ? {
-          ...offer,
-          availableQuantity: available,
-          deliveryLabel: `Поставка на ${warehouse?.name ?? "РЕСХ региона"}`,
-        }
-      : offer
+  // Предложения продавцов под РЕСХ цеха — см. lib/offers.
+  const offers = withCustomerWarehouse(
+    offersOfProduct(product.id),
+    available,
+    warehouse?.name ?? null
   );
   const selectedOffer =
     offers.find((o) => o.id === pickedOfferId) ??
