@@ -15,6 +15,34 @@ npm run build    # прод-сборка в dist/ (base = /kazmys/)
 npm run lint     # tsc --noEmit
 ```
 
+## Показать с ноутбука
+
+В одной сети (Wi-Fi офиса) достаточно `npm run dev:lan` — Vite слушает все
+интерфейсы и печатает адрес вида `http://192.168.0.98:5173`. На Windows первый
+раз нужно разрешить входящие подключения на порт (из PowerShell от админа):
+
+```powershell
+New-NetFirewallRule -DisplayName "Vite dev 5173" -Direction Inbound `
+  -Action Allow -Protocol TCP -LocalPort 5173 -Profile Private
+```
+
+Чтобы ссылка работала из любой сети, а хостом остался ноутбук, поверх дев-сервера
+поднимается туннель Cloudflare (бесплатный, без аккаунта):
+
+```bash
+winget install --id Cloudflare.cloudflared -e   # один раз
+npm run dev:lan                                 # терминал 1
+npm run share                                   # терминал 2 → https://…trycloudflare.com
+```
+
+Адрес быстрого туннеля выдаётся заново при каждом запуске и живёт, пока запущены
+оба процесса и ноутбук не спит. Домены туннелей перечислены в
+`server.allowedHosts` ([vite.config.ts](vite.config.ts)) — без этого Vite
+отвечает «Blocked request». Ссылка открыта всем, у кого она есть: авторизации
+в прототипе нет, роль переключается в интерфейсе.
+
+Постоянный адрес, не зависящий от ноутбука, — это GitHub Pages ниже.
+
 ## Публикация
 
 GitHub Pages, деплой при каждом пуше в `main` —

@@ -40,5 +40,12 @@ export default defineConfig(({ mode }) => ({
     host: true,
     port: 5173,
     open: false,
+    /**
+     * Домены туннелей, через которые прототип показывают за пределами сети
+     * (cloudflared / localtunnel / ngrok). Без этого Vite отвечает
+     * «Blocked request»: по умолчанию он принимает только localhost и IP.
+     * Точка в начале разрешает и все поддомены.
+     */
+    allowedHosts: [".trycloudflare.com", ".loca.lt", ".ngrok-free.app"],
   },
 }));
