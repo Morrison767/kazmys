@@ -1,7 +1,8 @@
 name: Deploy to GitHub Pages
 
 # Прототип публикуется на GitHub Pages при каждом пуше в main.
-# В настройках репозитория: Settings → Pages → Source: GitHub Actions.
+# Настраивать ничего не нужно: шаг configure-pages включает Pages сам
+# (enablement: true) и переводит источник на GitHub Actions.
 on:
   push:
     branches: [main]
@@ -37,7 +38,11 @@ jobs:
       - name: Сборка (base = /kazmys/)
         run: npm run build
 
+      # enablement: true — включить Pages, если он ещё не включён в репозитории.
+      # Без этого шаг падает с «Get Pages site failed» и деплой не начинается.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
