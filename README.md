@@ -45,10 +45,11 @@ npm run share                                   # терминал 2 → https:/
 
 ## Публикация
 
-GitHub Pages, деплой при каждом пуше в `main` —
+Прототип открыт по адресу **https://morrison767.github.io/kazmys/** —
+деплой при каждом пуше в `main`,
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
-В настройках репозитория должно быть выбрано **Settings → Pages → Source:
-GitHub Actions**.
+Настраивать Pages руками не нужно: шаг `configure-pages` с `enablement: true`
+включает его сам и ставит источником GitHub Actions.
 
 Особенности статического хостинга учтены в
 [vite.config.ts](vite.config.ts): `base` равен `/kazmys/` (в деве — `/`),
